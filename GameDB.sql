@@ -1,48 +1,47 @@
--- Database for SO. Game: Uno.
--- Created by Hugo G, Iker P, Ivan P, Jordi S
-
-
+-- Base de datos para el juego UNO
 DROP DATABASE IF EXISTS GameDB;
 CREATE DATABASE GameDB;
 USE GameDB;
 
--- Create a table for users 
+-- Crear una tabla para los jugadores
 CREATE TABLE Player (
-    playerId INT PRIMARY KEY NOT NULL, 
+    playerId INT PRIMARY KEY AUTO_INCREMENT,  -- AUTO_INCREMENT para ID automático
     username VARCHAR(255) NOT NULL, 
-    password VARCHAR(255) NOT NULL, 
-    score INT NOT NULL 
-)ENGINE = InnoDB;
+    password VARCHAR(255) NOT NULL
+) ENGINE = InnoDB;
 
--- Create a table for UNO games
+-- Crear una tabla para las partidas de UNO
 CREATE TABLE UnoTable (
-    tableId INT PRIMARY KEY NOT NULL, 
+    tableId INT PRIMARY KEY AUTO_INCREMENT,  -- AUTO_INCREMENT para que se asigne automáticamente un ID único
     playerCount INT NOT NULL, 
     cardCount INT NOT NULL, 
-    endDateTime VARCHAR(255) NOT NULL, 
+    endDateTime DATETIME NOT NULL,  -- Cambié a DATETIME para mejor manejo de fechas
     durationMinutes INT NOT NULL, 
     winnerId INT,  
-    FOREIGN KEY (winnerId) REFERENCES Player(playerId) 
-)ENGINE = InnoDB;
+    FOREIGN KEY (winnerId) REFERENCES Player(playerId)  -- Clave foránea que referencia a Player
+) ENGINE = InnoDB;
 
--- Create a table for N:M relationships
+-- Crear una tabla para las relaciones N:M entre jugadores y partidas
 CREATE TABLE PlayerGameRelation (
     playerId INT NOT NULL, 
     tableId INT NOT NULL, 
     FOREIGN KEY (playerId) REFERENCES Player(playerId),
-    FOREIGN KEY (tableId) REFERENCES UnoTable(tableId) 
-)ENGINE = InnoDB;
+    FOREIGN KEY (tableId) REFERENCES UnoTable(tableId),
+    PRIMARY KEY (playerId, tableId)  -- Definimos una clave primaria compuesta para evitar duplicados
+) ENGINE = InnoDB;
 
-INSERT INTO Player VALUES (9,'Hugo','hugo',0);
-INSERT INTO Player VALUES (3,'Iker','iker',0);
-INSERT INTO Player VALUES (5,'Jordi','jordi',0);
-INSERT INTO Player VALUES (7,'Ivan','ivan',0);
+-- Insertar jugadores de ejemplo
+INSERT INTO Player (username, password) VALUES ('Hugo', 'hugo');
+INSERT INTO Player (username, password) VALUES ('Iker', 'iker');
+INSERT INTO Player (username, password) VALUES ('Jordi', 'jordi');
+INSERT INTO Player (username, password) VALUES ('Ivan', 'ivan');
 
+-- Insertar una partida de ejemplo con un ganador válido
+INSERT INTO UnoTable (playerCount, cardCount, endDateTime, durationMinutes, winnerId)
+VALUES (4, 60, '2023-09-17 17:00:00', 10, 1);  -- 'winnerId' debe coincidir con un 'playerId' válido en Player
 
-INSERT INTO UnoTable VALUES (1,4,60,'2023-09-17 17:00:00', 10,5);
-
-INSERT INTO PlayerGameRelation VALUES (9,1);
-INSERT INTO PlayerGameRelation VALUES (3,1);
-INSERT INTO PlayerGameRelation VALUES (5,1);
-INSERT INTO PlayerGameRelation VALUES (7,1);
-
+-- Insertar relaciones entre jugadores y la partida
+INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (1, 1);
+INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (2, 1);
+INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (3, 1);
+INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (4, 1);
