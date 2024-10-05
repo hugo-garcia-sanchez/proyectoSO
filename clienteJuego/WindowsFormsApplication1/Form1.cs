@@ -28,7 +28,7 @@ namespace ClientApplication
         {
             // Creamos un IPEndPoint con la IP del servidor y el puerto del servidor al que deseamos conectarnos
             IPAddress direc = IPAddress.Parse("192.168.56.102");  // Cambia la IP por la de tu servidor
-            IPEndPoint ipep = new IPEndPoint(direc, 9015);
+            IPEndPoint ipep = new IPEndPoint(direc, 9020);
 
             // Creamos el socket 
             server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -88,7 +88,21 @@ namespace ClientApplication
         {
         }
 
-        
+        private void loginButton_Click(object sender, EventArgs e)
+        {
+            // Botón para registrar un nuevo jugador
+            string mensaje = "2/" + username.Text + "/" + password.Text;
+            // Enviamos al servidor el nombre de usuario y la contraseña tecleados
+            byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
+            server.Send(msg);
+
+            // Recibimos la respuesta del servidor
+            byte[] msg2 = new byte[512];
+            int bytesReceived = server.Receive(msg2);
+            string response = Encoding.ASCII.GetString(msg2, 0, bytesReceived); // Cambié la forma de leer la respuesta
+
+            MessageBox.Show(response);
+        }
     }
 }
 

@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <mysql.h>
 
+// Ultima actualizacion por Hugo García a las 22:30 del 5/10/24
+
 int main(int argc, char *argv[])
 {
 	int sock_conn, sock_listen, ret;
@@ -39,7 +41,7 @@ int main(int argc, char *argv[])
 	memset(&serv_adr, 0, sizeof(serv_adr));
 	serv_adr.sin_family = AF_INET;
 	serv_adr.sin_addr.s_addr = htonl(INADDR_ANY);
-	serv_adr.sin_port = htons(9015);
+	serv_adr.sin_port = htons(9020);
 	
 	if (bind(sock_listen, (struct sockaddr *)&serv_adr, sizeof(serv_adr)) < 0) {
 		printf("Error during bind\n");
@@ -81,28 +83,65 @@ int main(int argc, char *argv[])
 			
 			if (code == 0) {
 				terminate = 1;  // Disconnect
-			} else if (code == 1) {
+			} else if (code == 1) 
+			{
 				// Insert a new player into the database
 				char query[512];
 				sprintf(query, "INSERT INTO Player (username, password) VALUES ('%s', '%s')", name, password);
 				
 				err = mysql_query(conn, query);
+				if (err != 0) 
+				{
+					printf("Error inserting into the database: %u %s\n", mysql_errno(conn), mysql_error(conn));
+					sprintf(response, "Error registering player %s", name);
+				} 
+				else 
+				{
+					sprintf(response, "Player %s successfully registered", name);
+				}
+			}
+			else if (code == 2) // Login
+			{
+				
+				char query[512];
+				sprintf(query, "SELECT playerID FROM Player WHERE username = '%s' AND password = '%s'", name, password);
+				
+				err = mysql_query(conn, query);
 				if (err != 0) {
 					printf("Error inserting into the database: %u %s\n", mysql_errno(conn), mysql_error(conn));
 					sprintf(response, "Error registering player %s", name);
-				} else {
-					sprintf(response, "Player %s successfully registered", name);
-				}
-				
-				printf("Response: %s\n", response);
+				} 
+				else 
+				{
+					MYSQL_RES *result = mysql_store_result(conn);
+					if (result) 
+					{
+						if (mysql_num_rows(result) != 0)
+						{
+							MYSQL_ROW ID = mysql_fetch_row(result);
+							
+							sprintf(response, "Player %s has logged in with ID %s.", name,ID[0]);
+						}
+						else 
+						{
+							sprintf(response, "Wrong username or password, please try again");
+						}
+					}	
+					else { sprintf(response, "Some error has happened before log in.");
+			}
+			if (code != 0)
+			{
+				printf ("Response: %s\n",response);
 				write(sock_conn, response, strlen(response));
 			}
+			}
 		}
-		
-		close(sock_conn);  // Close the connection with the client
 	}
+		close(sock_conn);  // Close the connection with the client
+	
 	
 	// Close MySQL connection
 	mysql_close(conn);
-	return 0;
 }
+}
+
