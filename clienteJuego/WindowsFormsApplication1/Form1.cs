@@ -28,7 +28,7 @@ namespace ClientApplication
         {
             // Creamos un IPEndPoint con la IP del servidor y el puerto del servidor al que deseamos conectarnos
             IPAddress direc = IPAddress.Parse("192.168.56.102");  // Cambia la IP por la de tu servidor
-            IPEndPoint ipep = new IPEndPoint(direc, 9021);
+            IPEndPoint ipep = new IPEndPoint(direc, 9051);
 
             // Creamos el socket 
             server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
