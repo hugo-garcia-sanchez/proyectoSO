@@ -137,3 +137,13 @@ D:\Uni\3A\SO\new\proyectoSO-1-dev\clienteJuego\WindowsFormsApplication1\obj\Debu
 D:\Uni\3A\SO\new\proyectoSO-1-dev\clienteJuego\WindowsFormsApplication1\obj\Debug\clienteForm.csproj.CoreCompileInputs.cache
 D:\Uni\3A\SO\new\proyectoSO-1-dev\clienteJuego\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.exe
 D:\Uni\3A\SO\new\proyectoSO-1-dev\clienteJuego\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.pdb
+C:\Users\Propietario\Desktop\3A\so\proyecto\proyectoSO\clienteJuego\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe.config
+C:\Users\Propietario\Desktop\3A\so\proyecto\proyectoSO\clienteJuego\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe
+C:\Users\Propietario\Desktop\3A\so\proyecto\proyectoSO\clienteJuego\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.pdb
+C:\Users\Propietario\Desktop\3A\so\proyecto\proyectoSO\clienteJuego\WindowsFormsApplication1\obj\Debug\clienteForm.csproj.AssemblyReference.cache
+C:\Users\Propietario\Desktop\3A\so\proyecto\proyectoSO\clienteJuego\WindowsFormsApplication1\obj\Debug\ClientApplication.Form1.resources
+C:\Users\Propietario\Desktop\3A\so\proyecto\proyectoSO\clienteJuego\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.Properties.Resources.resources
+C:\Users\Propietario\Desktop\3A\so\proyecto\proyectoSO\clienteJuego\WindowsFormsApplication1\obj\Debug\clienteForm.csproj.GenerateResource.cache
+C:\Users\Propietario\Desktop\3A\so\proyecto\proyectoSO\clienteJuego\WindowsFormsApplication1\obj\Debug\clienteForm.csproj.CoreCompileInputs.cache
+C:\Users\Propietario\Desktop\3A\so\proyecto\proyectoSO\clienteJuego\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.exe
+C:\Users\Propietario\Desktop\3A\so\proyecto\proyectoSO\clienteJuego\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.pdb
