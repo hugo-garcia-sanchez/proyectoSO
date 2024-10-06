@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <mysql.h>
 
-// Ultima actualizacion por Hugo GarcÃ­a a las 22:30 del 5/10/24
+// Ultima actualizacion por Hugo García a las 22:30 del 5/10/24
 
 int main(int argc, char *argv[])
 {
@@ -100,6 +100,106 @@ int main(int argc, char *argv[])
 					sprintf(response, "Player %s successfully registered", name);
 				}
 			}
+			else if (code == 3) {
+				char query[512];
+				sprintf(query, "SELECT Player.username "
+						"FROM Player, PlayerGameRelation "
+						"WHERE PlayerGameRelation.tableId = 1 "
+						"AND Player.playerId = PlayerGameRelation.playerId");
+				err = mysql_query(conn, query);
+				if (err != 0) {
+					printf("Error querying the database: %u %s\n", mysql_errno(conn), mysql_error(conn));
+					sprintf(response, "Error fetching players from game 1");
+				} else {
+					MYSQL_RES *result = mysql_store_result(conn);
+					if (result == NULL) {
+						printf("Error storing result: %u %s\n", mysql_errno(conn), mysql_error(conn));
+						sprintf(response, "Error fetching result");
+					} else {
+						MYSQL_ROW row;
+						strcpy(response, "Players in Game 1: ");
+						while ((row = mysql_fetch_row(result))) {
+							strcat(response, row[0]);
+							strcat(response, " ");
+						}
+						mysql_free_result(result);
+					}
+				}
+				printf("Response: %s\n", response);
+				write(sock_conn, response, strlen(response));
+			} 
+			else if (code == 4) {
+				char query[512];
+				sprintf(query, "SELECT COUNT(DISTINCT UnoTable.tableId) "
+						"FROM Player "
+						"JOIN PlayerGameRelation ON Player.playerId = PlayerGameRelation.playerId "
+						"JOIN UnoTable ON PlayerGameRelation.tableId = UnoTable.tableId "
+						"WHERE Player.username = '%s'", name);
+				err = mysql_query(conn, query);
+				if (err != 0) {
+					printf("Error querying the database: %u %s\n", mysql_errno(conn), mysql_error(conn));
+					sprintf(response, "Error fetching the tables for player %s", name);
+				} else {
+					MYSQL_RES *result = mysql_store_result(conn);
+					if (result == NULL) {
+						printf("Error storing result: %u %s\n", mysql_errno(conn), mysql_error(conn));
+						sprintf(response, "Error fetching result for player %s", name);
+					} else {
+						MYSQL_ROW row;
+						if (mysql_num_rows(result) == 0) {
+							sprintf(response, "The player '%s' is not participating in any tables.", name);
+						} else {
+							strcpy(response, "Player is participating in the following tables:\n");
+							while ((row = mysql_fetch_row(result))) {
+								strcat(response, "Table ID: ");
+								strcat(response, row[0]);
+								
+								strcat(response, "\n");
+							}
+						}
+						mysql_free_result(result);
+					}
+				}
+						
+				printf("Response: %s\n", response);
+				write(sock_conn, response, strlen(response));
+			}	
+				
+				
+				
+			else if (code == 4) {
+				char query[512];
+				sprintf(query, "SELECT UnoTable.tableId, UnoTable.endDateTime "
+						"FROM Player, PlayerGameRelation, UnoTable "
+						"WHERE Player.username = '%s' "
+						"AND Player.playerId = PlayerGameRelation.playerId "
+						"AND PlayerGameRelation.tableId = UnoTable.tableId", name);
+				err = mysql_query(conn, query);
+				if (err != 0) {
+					printf("Error querying the database: %u %s\n", mysql_errno(conn), mysql_error(conn));
+					sprintf(response, "Error fetching players from game 1");
+				} else {
+					MYSQL_RES *result = mysql_store_result(conn);
+					if (result == NULL) {
+						printf("Error storing result: %u %s\n", mysql_errno(conn), mysql_error(conn));
+						sprintf(response, "Error fetching result");
+					} else {
+						MYSQL_ROW row;
+						strcpy(response, "Tables for player: ");
+						while ((row = mysql_fetch_row(result))) {
+							strcat(response, "Table ID: ");strcat(response, row[0]);
+							strcat(response, ", Date: ");
+							strcat(response, row[1]);
+							strcat(response, " ");
+						}
+						mysql_free_result(result);
+					}
+				}
+				printf("Response: %s\n", response);
+				write(sock_conn, response, strlen(response));
+			} 
+			
+				
 			else if (code == 2) // Login
 			{
 				
@@ -128,20 +228,19 @@ int main(int argc, char *argv[])
 						}
 					}	
 					else { sprintf(response, "Some error has happened before log in.");
-			}
-			if (code != 0)
-			{
-				printf ("Response: %s\n",response);
-				write(sock_conn, response, strlen(response));
-			}
+					}
+					if (code != 0)
+					{
+						printf ("Response: %s\n",response);
+						write(sock_conn, response, strlen(response));
+					}
+				}
 			}
 		}
-	}
 		close(sock_conn);  // Close the connection with the client
-	
-	
-	// Close MySQL connection
-	mysql_close(conn);
+		
+		
+		// Close MySQL connection
+		mysql_close(conn);
+	}
 }
-}
-

@@ -127,3 +127,13 @@ C:\Users\hgs09\Desktop\SO\sproyect repository\clienteEjercicioGuia\WindowsFormsA
 C:\Users\hgs09\Desktop\SO\sproyect repository\clienteEjercicioGuia\WindowsFormsApplication1\obj\Debug\clienteForm.csproj.CoreCompileInputs.cache
 C:\Users\hgs09\Desktop\SO\sproyect repository\clienteEjercicioGuia\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.exe
 C:\Users\hgs09\Desktop\SO\sproyect repository\clienteEjercicioGuia\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.pdb
+D:\Uni\3A\SO\new\proyectoSO-1-dev\clienteJuego\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe.config
+D:\Uni\3A\SO\new\proyectoSO-1-dev\clienteJuego\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe
+D:\Uni\3A\SO\new\proyectoSO-1-dev\clienteJuego\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.pdb
+D:\Uni\3A\SO\new\proyectoSO-1-dev\clienteJuego\WindowsFormsApplication1\obj\Debug\clienteForm.csproj.AssemblyReference.cache
+D:\Uni\3A\SO\new\proyectoSO-1-dev\clienteJuego\WindowsFormsApplication1\obj\Debug\ClientApplication.Form1.resources
+D:\Uni\3A\SO\new\proyectoSO-1-dev\clienteJuego\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.Properties.Resources.resources
+D:\Uni\3A\SO\new\proyectoSO-1-dev\clienteJuego\WindowsFormsApplication1\obj\Debug\clienteForm.csproj.GenerateResource.cache
+D:\Uni\3A\SO\new\proyectoSO-1-dev\clienteJuego\WindowsFormsApplication1\obj\Debug\clienteForm.csproj.CoreCompileInputs.cache
+D:\Uni\3A\SO\new\proyectoSO-1-dev\clienteJuego\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.exe
+D:\Uni\3A\SO\new\proyectoSO-1-dev\clienteJuego\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.pdb

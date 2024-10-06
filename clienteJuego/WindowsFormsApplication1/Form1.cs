@@ -103,6 +103,35 @@ namespace ClientApplication
 
             MessageBox.Show(response);
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            // Botón para registrar un nuevo jugador
+            string mensaje = "3/" + username.Text + "/" + password.Text;
+            // Enviamos al servidor el nombre de usuario y la contraseña tecleados
+            byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
+            server.Send(msg);
+
+            byte[] msg2 = new byte[512];
+            int bytesReceived = server.Receive(msg2);
+            string response = Encoding.ASCII.GetString(msg2, 0, bytesReceived); // Cambié la forma de leer la respuesta
+
+            MessageBox.Show(response);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            // Botón para registrar un nuevo jugador
+            string mensaje = "4/" + username.Text + "/" + password.Text;
+            // Enviamos al servidor el nombre de usuario y la contraseña tecleados
+            byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
+            server.Send(msg);
+            byte[] msg2 = new byte[512];
+            int bytesReceived = server.Receive(msg2);
+            string response = Encoding.ASCII.GetString(msg2, 0, bytesReceived); // Cambié la forma de leer la respuesta
+
+            MessageBox.Show(response);
+        }
     }
 }
 
