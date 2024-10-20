@@ -1,4 +1,3 @@
--- Base de datos para el juego UNO
 DROP DATABASE IF EXISTS GameDB;
 CREATE DATABASE GameDB;
 USE GameDB;
@@ -12,7 +11,7 @@ CREATE TABLE Player (
 
 -- Crear una tabla para las partidas de UNO
 CREATE TABLE UnoTable (
-    tableId INT PRIMARY KEY AUTO_INCREMENT,  -- AUTO_INCREMENT para que se asigne automáticamente un ID único
+    tableId INT PRIMARY KEY AUTO_INCREMENT,  
     playerCount INT NOT NULL, 
     cardCount INT NOT NULL, 
     endDateTime DATETIME NOT NULL,  -- Cambié a DATETIME para mejor manejo de fechas
@@ -39,9 +38,15 @@ INSERT INTO Player (username, password) VALUES ('Ivan', 'ivan');
 -- Insertar una partida de ejemplo con un ganador válido
 INSERT INTO UnoTable (playerCount, cardCount, endDateTime, durationMinutes, winnerId)
 VALUES (4, 60, '2023-09-17 17:00:00', 10, 1);  -- 'winnerId' debe coincidir con un 'playerId' válido en Player
+INSERT INTO UnoTable (playerCount, cardCount, endDateTime, durationMinutes, winnerId)
+VALUES (4, 60, '2023-09-17 18:00:00', 10, 2);
+INSERT INTO UnoTable (playerCount, cardCount, endDateTime, durationMinutes, winnerId)
+VALUES (4, 60, '2023-09-17 19:00:00', 10, 3);
+INSERT INTO UnoTable (playerCount, cardCount, endDateTime, durationMinutes, winnerId)
+VALUES (4, 60, '2023-09-17 20:00:00', 10, 4);
 
 -- Insertar relaciones entre jugadores y la partida
 INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (1, 1);
-INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (2, 1);
-INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (3, 1);
-INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (4, 1);
+INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (2, 2);
+INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (3, 3);
+INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (4, 4);
