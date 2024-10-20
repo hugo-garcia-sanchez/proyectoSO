@@ -7,6 +7,6 @@ Versión 1 comunicada por Jordi
 URL del video: https://youtu.be/54poh16KheU
 
 Versión 2 generada por Jordi
-Versión 2 verificada por Hugo
+Versión 2 verificada por Hugo e Iker
 Versión 2 comunicada por Ivan
 URL del video: https://youtu.be/54poh16KheU
