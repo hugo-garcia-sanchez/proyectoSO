@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS GameDB;
-CREATE DATABASE GameDB;
-USE GameDB;
+DROP DATABASE IF EXISTS T3_GameUNODB;
+CREATE DATABASE T3_GameUNODB;
+USE T3_GameUNODB;
 
 -- Crear una tabla para los jugadores
 CREATE TABLE Player (
@@ -50,3 +50,4 @@ INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (1, 1);
 INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (2, 2);
 INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (3, 3);
 INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (4, 4);
+
