@@ -40,7 +40,7 @@ void *AtenderCliente(void *socket) {
 	}
 	
 	// Conectar a la base de datos
-	if (mysql_real_connect(conn, "localhost", "root", "mysql", "GameDB", 0, NULL, 0) == NULL) {
+	if (mysql_real_connect(conn, "shiva2.upc.es", "root", "mysql", "T3_GameUNODB", 0, NULL, 0) == NULL) {
 		printf("Error initializing MySQL connection: %u %s\n", mysql_errno(conn), mysql_error(conn));
 		pthread_exit(NULL);
 	}
@@ -275,10 +275,10 @@ void *AtenderCliente(void *socket) {
 			
 			char query[512];  // Para almacenar el tercer valor (tableId)
 			
-			// Obtener el tercer valor (número de la partida)
+			// Obtener el tercer valor (n mero de la partida)
 			
 			
-			// Consulta para obtener el playerID usando el nombre y la contraseña
+			// Consulta para obtener el playerID usando el nombre y la contrase a
 			sprintf(query, "SELECT playerID FROM Player WHERE username = '%s' AND password = '%s'", name, password);
 			printf(tercera);
 			printf("\n");
@@ -340,10 +340,10 @@ void *AtenderCliente(void *socket) {
 			
 			char query[512];  // Para almacenar el tercer valor (tableId)
 			
-			// Obtener el tercer valor (número de la partida)
+			// Obtener el tercer valor (n mero de la partida)
 			
 			
-			// Consulta para obtener el playerID usando el nombre y la contraseña
+			// Consulta para obtener el playerID usando el nombre y la contrase a
 			sprintf(query, "SELECT playerID FROM Player WHERE username = '%s' AND password = '%s'", name, password);
 			printf(tercera);
 			printf("\n");
@@ -407,10 +407,10 @@ void *AtenderCliente(void *socket) {
 			
 			char query[512];  // Para almacenar el tercer valor (tableId)
 			
-			// Obtener el tercer valor (número de la partida)
+			// Obtener el tercer valor (n mero de la partida)
 			
 			
-			// Consulta para obtener el playerID usando el nombre y la contraseña
+			// Consulta para obtener el playerID usando el nombre y la contrase a
 			sprintf(query, "SELECT playerID FROM Player WHERE username = '%s' AND password = '%s'", name, password);
 			printf(tercera);
 			printf("\n");
@@ -472,10 +472,10 @@ void *AtenderCliente(void *socket) {
 			
 			char query[512];  // Para almacenar el tercer valor (tableId)
 			
-			// Obtener el tercer valor (número de la partida)
+			// Obtener el tercer valor (n mero de la partida)
 			
 			
-			// Consulta para obtener el playerID usando el nombre y la contraseña
+			// Consulta para obtener el playerID usando el nombre y la contrase a
 			sprintf(query, "SELECT playerID FROM Player WHERE username = '%s' AND password = '%s'", name, password);
 			printf(tercera);
 			printf("\n");
@@ -530,10 +530,10 @@ void *AtenderCliente(void *socket) {
 			}
 			printf("Response: %s\n", response);
 			write(sock_conn, response, strlen(response));
-		
-		
-	
-	}
+			
+			
+			
+		}
 		
 		if (code == 15) {
 			pthread_mutex_lock(&mutex);  // Bloquear acceso a los nombres de los jugadores
@@ -554,11 +554,11 @@ void *AtenderCliente(void *socket) {
 		
 		
 		// Incrementar el contador en caso de que se requiera				// esto no es lo mismo que abajo?
-/*		if (code != 0) {*/
-/*			pthread_mutex_lock(&mutex);*/
-/*			contador++;*/
-/*			pthread_mutex_unlock(&mutex);*/
-/*		}*/
+		/*		if (code != 0) {*/
+		/*			pthread_mutex_lock(&mutex);*/
+		/*			contador++;*/
+		/*			pthread_mutex_unlock(&mutex);*/
+		/*		}*/
 		if ((code == 1)||(code == 2)||(code == 3)||(code == 4)||(code == 5)||(code == 6)||(code == 7)||(code == 8)||(code == 9)||(code == 10)
 			||(code == 11)||(code == 12)||(code == 13)||(code == 14)||(code == 15))
 		{
@@ -576,6 +576,7 @@ void *AtenderCliente(void *socket) {
 
 int main(int argc, char *argv[]) {
 	int sock_conn, sock_listen;
+	int puerto = 50061;
 	struct sockaddr_in serv_adr;
 	
 	// InicializaciÃ³n del socket
@@ -587,7 +588,7 @@ int main(int argc, char *argv[]) {
 	memset(&serv_adr, 0, sizeof(serv_adr));
 	serv_adr.sin_family = AF_INET;
 	serv_adr.sin_addr.s_addr = htonl(INADDR_ANY);
-	serv_adr.sin_port = htons(9040);
+	serv_adr.sin_port = htons(puerto);
 	
 	if (bind(sock_listen, (struct sockaddr *)&serv_adr, sizeof(serv_adr)) < 0) {
 		printf("Error during bind\n");

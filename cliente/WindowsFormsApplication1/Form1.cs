@@ -66,8 +66,8 @@ namespace ClientApplication
 
         void button1_Click(object sender, EventArgs e)
         {
-            IPAddress direc = IPAddress.Parse("192.168.56.102");  // Cambia la IP por la de tu servidor
-            IPEndPoint ipep = new IPEndPoint(direc, 9041);
+            IPAddress direc = IPAddress.Parse("10.4.119.5");  // Cambia la IP por la de tu servidor
+            IPEndPoint ipep = new IPEndPoint(direc, 50061);
 
             server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
