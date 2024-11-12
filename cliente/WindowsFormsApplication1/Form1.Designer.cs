@@ -17,7 +17,7 @@
             {
                 components.Dispose();
             }
-            base.Dispose(disposing);
+            base.Dispose(disposing); 
         }
 
         #region Código generado por el Diseñador de Windows Forms
@@ -29,79 +29,76 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.button1 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btnConn = new System.Windows.Forms.Button();
+            this.btnDesconnect = new System.Windows.Forms.Button();
             this.password = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lblPassword = new System.Windows.Forms.Label();
+            this.lblUsername = new System.Windows.Forms.Label();
             this.username = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.WhatGame = new System.Windows.Forms.RadioButton();
-            this.NumPlayers = new System.Windows.Forms.RadioButton();
-            this.PlayingG1 = new System.Windows.Forms.RadioButton();
-            this.label5 = new System.Windows.Forms.Label();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
+            this.btnReg = new System.Windows.Forms.Button();
+            this.btnLog = new System.Windows.Forms.Button();
+            this.btnGreen = new System.Windows.Forms.Button();
+            this.btnRed = new System.Windows.Forms.Button();
+            this.btnBlue = new System.Windows.Forms.Button();
+            this.btnYellow = new System.Windows.Forms.Button();
             this.cardlbl = new System.Windows.Forms.Label();
-            this.button10 = new System.Windows.Forms.Button();
-            this.button11 = new System.Windows.Forms.Button();
+            this.btnLast = new System.Windows.Forms.Button();
             this.button13 = new System.Windows.Forms.Button();
             this.button12 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
             this.button16 = new System.Windows.Forms.Button();
-            this.button17 = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.panelBarraTitulo = new System.Windows.Forms.Panel();
             this.maximizeBtn = new System.Windows.Forms.Button();
             this.minimizeBtn = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
+            this.lblTitle = new System.Windows.Forms.Label();
             this.button18 = new System.Windows.Forms.Button();
             this.GameJoin = new System.Windows.Forms.GroupBox();
             this.indicadorConexion_label = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
             this.onlineGrid = new System.Windows.Forms.DataGridView();
+            this.lblPlayersOnline = new System.Windows.Forms.Label();
+            this.joinGameBox = new System.Windows.Forms.TextBox();
+            this.lblJoin = new System.Windows.Forms.Label();
+            this.lblGames = new System.Windows.Forms.Label();
+            this.gamesGrid = new System.Windows.Forms.DataGridView();
             this.panelBarraTitulo.SuspendLayout();
             this.GameJoin.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.onlineGrid)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gamesGrid)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // btnConn
             // 
-            this.button1.BackColor = System.Drawing.Color.Black;
-            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button1.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(9, 10);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(169, 27);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Connection";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnConn.BackColor = System.Drawing.Color.Black;
+            this.btnConn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnConn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnConn.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnConn.ForeColor = System.Drawing.Color.White;
+            this.btnConn.Location = new System.Drawing.Point(9, 10);
+            this.btnConn.Name = "btnConn";
+            this.btnConn.Size = new System.Drawing.Size(169, 27);
+            this.btnConn.TabIndex = 4;
+            this.btnConn.Text = "Connection";
+            this.btnConn.UseVisualStyleBackColor = false;
+            this.btnConn.Click += new System.EventHandler(this.btnConn_Click);
             // 
-            // button3
+            // btnDesconnect
             // 
-            this.button3.BackColor = System.Drawing.Color.Black;
-            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button3.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold);
-            this.button3.ForeColor = System.Drawing.Color.White;
-            this.button3.Location = new System.Drawing.Point(9, 43);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(169, 27);
-            this.button3.TabIndex = 10;
-            this.button3.Text = "Desconnection";
-            this.button3.UseVisualStyleBackColor = false;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.btnDesconnect.BackColor = System.Drawing.Color.Black;
+            this.btnDesconnect.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnDesconnect.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold);
+            this.btnDesconnect.ForeColor = System.Drawing.Color.White;
+            this.btnDesconnect.Location = new System.Drawing.Point(9, 43);
+            this.btnDesconnect.Name = "btnDesconnect";
+            this.btnDesconnect.Size = new System.Drawing.Size(169, 27);
+            this.btnDesconnect.TabIndex = 10;
+            this.btnDesconnect.Text = "Desconnection";
+            this.btnDesconnect.UseVisualStyleBackColor = false;
+            this.btnDesconnect.Click += new System.EventHandler(this.btnDesconnect_Click);
             // 
             // password
             // 
@@ -113,31 +110,30 @@
             this.password.Name = "password";
             this.password.Size = new System.Drawing.Size(136, 16);
             this.password.TabIndex = 13;
-            this.password.TextChanged += new System.EventHandler(this.password_TextChanged);
             // 
-            // label2
+            // lblPassword
             // 
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(9, 32);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(89, 21);
-            this.label2.TabIndex = 14;
-            this.label2.Text = "Password:";
+            this.lblPassword.AutoSize = true;
+            this.lblPassword.BackColor = System.Drawing.Color.Transparent;
+            this.lblPassword.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPassword.ForeColor = System.Drawing.Color.White;
+            this.lblPassword.Location = new System.Drawing.Point(9, 32);
+            this.lblPassword.Name = "lblPassword";
+            this.lblPassword.Size = new System.Drawing.Size(89, 21);
+            this.lblPassword.TabIndex = 14;
+            this.lblPassword.Text = "Password:";
             // 
-            // label3
+            // lblUsername
             // 
-            this.label3.AutoSize = true;
-            this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(5, 6);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(93, 21);
-            this.label3.TabIndex = 15;
-            this.label3.Text = "Username:";
+            this.lblUsername.AutoSize = true;
+            this.lblUsername.BackColor = System.Drawing.Color.Transparent;
+            this.lblUsername.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblUsername.ForeColor = System.Drawing.Color.White;
+            this.lblUsername.Location = new System.Drawing.Point(5, 6);
+            this.lblUsername.Name = "lblUsername";
+            this.lblUsername.Size = new System.Drawing.Size(93, 21);
+            this.lblUsername.TabIndex = 15;
+            this.lblUsername.Text = "Username:";
             // 
             // username
             // 
@@ -150,181 +146,104 @@
             this.username.Size = new System.Drawing.Size(136, 16);
             this.username.TabIndex = 16;
             // 
-            // button2
+            // btnReg
             // 
-            this.button2.BackColor = System.Drawing.Color.Black;
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button2.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold);
-            this.button2.ForeColor = System.Drawing.Color.White;
-            this.button2.Location = new System.Drawing.Point(37, 67);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(169, 30);
-            this.button2.TabIndex = 17;
-            this.button2.Text = "Register";
-            this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnReg.BackColor = System.Drawing.Color.Black;
+            this.btnReg.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnReg.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold);
+            this.btnReg.ForeColor = System.Drawing.Color.White;
+            this.btnReg.Location = new System.Drawing.Point(37, 67);
+            this.btnReg.Name = "btnReg";
+            this.btnReg.Size = new System.Drawing.Size(169, 30);
+            this.btnReg.TabIndex = 17;
+            this.btnReg.Text = "Register";
+            this.btnReg.UseVisualStyleBackColor = false;
+            this.btnReg.Click += new System.EventHandler(this.btnReg_Click);
             // 
-            // button4
+            // btnLog
             // 
-            this.button4.BackColor = System.Drawing.Color.Black;
-            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button4.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold);
-            this.button4.ForeColor = System.Drawing.Color.White;
-            this.button4.Location = new System.Drawing.Point(37, 103);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(169, 30);
-            this.button4.TabIndex = 19;
-            this.button4.Text = "Log In";
-            this.button4.UseVisualStyleBackColor = false;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.btnLog.BackColor = System.Drawing.Color.Black;
+            this.btnLog.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnLog.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold);
+            this.btnLog.ForeColor = System.Drawing.Color.White;
+            this.btnLog.Location = new System.Drawing.Point(37, 103);
+            this.btnLog.Name = "btnLog";
+            this.btnLog.Size = new System.Drawing.Size(169, 30);
+            this.btnLog.TabIndex = 19;
+            this.btnLog.Text = "Log In";
+            this.btnLog.UseVisualStyleBackColor = false;
+            this.btnLog.Click += new System.EventHandler(this.btnLog_Click);
             // 
-            // WhatGame
+            // btnGreen
             // 
-            this.WhatGame.AutoSize = true;
-            this.WhatGame.Font = new System.Drawing.Font("Segoe UI Emoji", 9F);
-            this.WhatGame.Location = new System.Drawing.Point(3, 55);
-            this.WhatGame.Name = "WhatGame";
-            this.WhatGame.Size = new System.Drawing.Size(175, 20);
-            this.WhatGame.TabIndex = 7;
-            this.WhatGame.TabStop = true;
-            this.WhatGame.Text = "What game are you playing?";
-            this.WhatGame.UseVisualStyleBackColor = true;
+            this.btnGreen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.btnGreen.Font = new System.Drawing.Font("Lucida Console", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGreen.Location = new System.Drawing.Point(437, 138);
+            this.btnGreen.Name = "btnGreen";
+            this.btnGreen.Size = new System.Drawing.Size(82, 110);
+            this.btnGreen.TabIndex = 24;
+            this.btnGreen.Text = "G";
+            this.btnGreen.UseVisualStyleBackColor = false;
+            this.btnGreen.Click += new System.EventHandler(this.button9_Click);
             // 
-            // NumPlayers
+            // btnRed
             // 
-            this.NumPlayers.AutoSize = true;
-            this.NumPlayers.Font = new System.Drawing.Font("Segoe UI Emoji", 9F);
-            this.NumPlayers.Location = new System.Drawing.Point(3, 80);
-            this.NumPlayers.Name = "NumPlayers";
-            this.NumPlayers.Size = new System.Drawing.Size(250, 20);
-            this.NumPlayers.TabIndex = 7;
-            this.NumPlayers.TabStop = true;
-            this.NumPlayers.Text = "How many players are there in your game?";
-            this.NumPlayers.UseVisualStyleBackColor = true;
+            this.btnRed.BackColor = System.Drawing.Color.Red;
+            this.btnRed.Font = new System.Drawing.Font("Lucida Console", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRed.Location = new System.Drawing.Point(538, 138);
+            this.btnRed.Name = "btnRed";
+            this.btnRed.Size = new System.Drawing.Size(82, 110);
+            this.btnRed.TabIndex = 25;
+            this.btnRed.Text = "R";
+            this.btnRed.UseVisualStyleBackColor = false;
+            this.btnRed.Click += new System.EventHandler(this.button6_Click);
             // 
-            // PlayingG1
+            // btnBlue
             // 
-            this.PlayingG1.AutoSize = true;
-            this.PlayingG1.Font = new System.Drawing.Font("Segoe UI Emoji", 9F);
-            this.PlayingG1.Location = new System.Drawing.Point(3, 29);
-            this.PlayingG1.Name = "PlayingG1";
-            this.PlayingG1.Size = new System.Drawing.Size(163, 20);
-            this.PlayingG1.TabIndex = 8;
-            this.PlayingG1.TabStop = true;
-            this.PlayingG1.Text = "Who is playing in game 1?";
-            this.PlayingG1.UseVisualStyleBackColor = true;
-            this.PlayingG1.CheckedChanged += new System.EventHandler(this.PlayingG1_CheckedChanged);
+            this.btnBlue.BackColor = System.Drawing.Color.Blue;
+            this.btnBlue.Font = new System.Drawing.Font("Lucida Console", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBlue.Location = new System.Drawing.Point(437, 269);
+            this.btnBlue.Name = "btnBlue";
+            this.btnBlue.Size = new System.Drawing.Size(82, 110);
+            this.btnBlue.TabIndex = 26;
+            this.btnBlue.Text = "B";
+            this.btnBlue.UseVisualStyleBackColor = false;
+            this.btnBlue.Click += new System.EventHandler(this.button7_Click);
             // 
-            // label5
+            // btnYellow
             // 
-            this.label5.AutoSize = true;
-            this.label5.BackColor = System.Drawing.Color.Transparent;
-            this.label5.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(96, 4);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(71, 21);
-            this.label5.TabIndex = 1;
-            this.label5.Text = "Queries";
-            // 
-            // button5
-            // 
-            this.button5.BackColor = System.Drawing.Color.Black;
-            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button5.Font = new System.Drawing.Font("Segoe UI Emoji", 9F);
-            this.button5.ForeColor = System.Drawing.Color.White;
-            this.button5.Location = new System.Drawing.Point(92, 106);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 23);
-            this.button5.TabIndex = 5;
-            this.button5.Text = "Send";
-            this.button5.UseVisualStyleBackColor = false;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // button9
-            // 
-            this.button9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.button9.Font = new System.Drawing.Font("Lucida Console", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button9.Location = new System.Drawing.Point(398, 145);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(82, 110);
-            this.button9.TabIndex = 24;
-            this.button9.Text = "G";
-            this.button9.UseVisualStyleBackColor = false;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
-            // 
-            // button6
-            // 
-            this.button6.BackColor = System.Drawing.Color.Red;
-            this.button6.Font = new System.Drawing.Font("Lucida Console", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button6.Location = new System.Drawing.Point(499, 145);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(82, 110);
-            this.button6.TabIndex = 25;
-            this.button6.Text = "R";
-            this.button6.UseVisualStyleBackColor = false;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
-            // 
-            // button7
-            // 
-            this.button7.BackColor = System.Drawing.Color.Blue;
-            this.button7.Font = new System.Drawing.Font("Lucida Console", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button7.Location = new System.Drawing.Point(398, 276);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(82, 110);
-            this.button7.TabIndex = 26;
-            this.button7.Text = "B";
-            this.button7.UseVisualStyleBackColor = false;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
-            // 
-            // button8
-            // 
-            this.button8.BackColor = System.Drawing.Color.Yellow;
-            this.button8.Font = new System.Drawing.Font("Lucida Console", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button8.Location = new System.Drawing.Point(499, 276);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(82, 110);
-            this.button8.TabIndex = 27;
-            this.button8.Text = "Y";
-            this.button8.UseVisualStyleBackColor = false;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
+            this.btnYellow.BackColor = System.Drawing.Color.Yellow;
+            this.btnYellow.Font = new System.Drawing.Font("Lucida Console", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnYellow.Location = new System.Drawing.Point(538, 269);
+            this.btnYellow.Name = "btnYellow";
+            this.btnYellow.Size = new System.Drawing.Size(82, 110);
+            this.btnYellow.TabIndex = 27;
+            this.btnYellow.Text = "Y";
+            this.btnYellow.UseVisualStyleBackColor = false;
+            this.btnYellow.Click += new System.EventHandler(this.button8_Click);
             // 
             // cardlbl
             // 
             this.cardlbl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.cardlbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cardlbl.Location = new System.Drawing.Point(613, 225);
+            this.cardlbl.Location = new System.Drawing.Point(652, 218);
             this.cardlbl.Name = "cardlbl";
             this.cardlbl.Size = new System.Drawing.Size(190, 90);
             this.cardlbl.TabIndex = 29;
-            this.cardlbl.Click += new System.EventHandler(this.contlbl_Click);
             // 
-            // button10
+            // btnLast
             // 
-            this.button10.BackColor = System.Drawing.Color.Black;
-            this.button10.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button10.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold);
-            this.button10.ForeColor = System.Drawing.Color.White;
-            this.button10.Location = new System.Drawing.Point(632, 329);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(147, 35);
-            this.button10.TabIndex = 30;
-            this.button10.Text = "Last card!";
-            this.button10.UseVisualStyleBackColor = false;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
-            // 
-            // button11
-            // 
-            this.button11.BackColor = System.Drawing.Color.Black;
-            this.button11.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button11.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold);
-            this.button11.ForeColor = System.Drawing.Color.White;
-            this.button11.Location = new System.Drawing.Point(613, 174);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(190, 35);
-            this.button11.TabIndex = 31;
-            this.button11.Text = "How does it work?";
-            this.button11.UseVisualStyleBackColor = false;
-            this.button11.Click += new System.EventHandler(this.button11_Click);
+            this.btnLast.BackColor = System.Drawing.Color.Black;
+            this.btnLast.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnLast.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold);
+            this.btnLast.ForeColor = System.Drawing.Color.White;
+            this.btnLast.Location = new System.Drawing.Point(671, 322);
+            this.btnLast.Name = "btnLast";
+            this.btnLast.Size = new System.Drawing.Size(147, 35);
+            this.btnLast.TabIndex = 30;
+            this.btnLast.Text = "Last card!";
+            this.btnLast.UseVisualStyleBackColor = false;
+            this.btnLast.Click += new System.EventHandler(this.button10_Click);
             // 
             // button13
             // 
@@ -383,20 +302,6 @@
             this.button16.UseVisualStyleBackColor = false;
             this.button16.Click += new System.EventHandler(this.button16_Click);
             // 
-            // button17
-            // 
-            this.button17.BackColor = System.Drawing.Color.Black;
-            this.button17.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button17.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold);
-            this.button17.ForeColor = System.Drawing.Color.White;
-            this.button17.Location = new System.Drawing.Point(922, 49);
-            this.button17.Name = "button17";
-            this.button17.Size = new System.Drawing.Size(166, 30);
-            this.button17.TabIndex = 43;
-            this.button17.Text = "Players Online: ";
-            this.button17.UseVisualStyleBackColor = false;
-            this.button17.Click += new System.EventHandler(this.button17_Click);
-            // 
             // btnClose
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -422,7 +327,7 @@
             this.panelBarraTitulo.BackColor = System.Drawing.Color.SteelBlue;
             this.panelBarraTitulo.Controls.Add(this.maximizeBtn);
             this.panelBarraTitulo.Controls.Add(this.minimizeBtn);
-            this.panelBarraTitulo.Controls.Add(this.label6);
+            this.panelBarraTitulo.Controls.Add(this.lblTitle);
             this.panelBarraTitulo.Controls.Add(this.btnClose);
             this.panelBarraTitulo.Controls.Add(this.button18);
             this.panelBarraTitulo.Dock = System.Windows.Forms.DockStyle.Top;
@@ -475,19 +380,18 @@
             this.minimizeBtn.UseVisualStyleBackColor = false;
             this.minimizeBtn.Click += new System.EventHandler(this.minimizeBtn_Click);
             // 
-            // label6
+            // lblTitle
             // 
-            this.label6.AutoSize = true;
-            this.label6.BackColor = System.Drawing.Color.Transparent;
-            this.label6.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(11, 8);
-            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(202, 21);
-            this.label6.TabIndex = 8;
-            this.label6.Text = "Welcome to UNO Game!";
-            this.label6.Click += new System.EventHandler(this.label6_Click);
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.BackColor = System.Drawing.Color.Transparent;
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTitle.ForeColor = System.Drawing.Color.White;
+            this.lblTitle.Location = new System.Drawing.Point(11, 8);
+            this.lblTitle.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(202, 21);
+            this.lblTitle.TabIndex = 8;
+            this.lblTitle.Text = "Welcome to UNO Game!";
             // 
             // button18
             // 
@@ -516,7 +420,7 @@
             this.GameJoin.Controls.Add(this.button15);
             this.GameJoin.Font = new System.Drawing.Font("Segoe UI Emoji", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.GameJoin.ForeColor = System.Drawing.Color.White;
-            this.GameJoin.Location = new System.Drawing.Point(938, 201);
+            this.GameJoin.Location = new System.Drawing.Point(177, 287);
             this.GameJoin.Name = "GameJoin";
             this.GameJoin.Size = new System.Drawing.Size(137, 70);
             this.GameJoin.TabIndex = 46;
@@ -534,17 +438,16 @@
             this.indicadorConexion_label.TabIndex = 47;
             this.indicadorConexion_label.Text = "⚫";
             this.indicadorConexion_label.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.indicadorConexion_label.Click += new System.EventHandler(this.indicadorConexion_label_Click);
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.SlateGray;
             this.panel1.Controls.Add(this.username);
             this.panel1.Controls.Add(this.password);
-            this.panel1.Controls.Add(this.button4);
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.button2);
-            this.panel1.Controls.Add(this.label3);
+            this.panel1.Controls.Add(this.btnLog);
+            this.panel1.Controls.Add(this.lblPassword);
+            this.panel1.Controls.Add(this.btnReg);
+            this.panel1.Controls.Add(this.lblUsername);
             this.panel1.Location = new System.Drawing.Point(12, 138);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(255, 143);
@@ -553,35 +456,76 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.SlateGray;
-            this.panel2.Controls.Add(this.button1);
+            this.panel2.Controls.Add(this.btnConn);
             this.panel2.Controls.Add(this.indicadorConexion_label);
-            this.panel2.Controls.Add(this.button3);
+            this.panel2.Controls.Add(this.btnDesconnect);
             this.panel2.Location = new System.Drawing.Point(12, 55);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(255, 77);
             this.panel2.TabIndex = 49;
-            // 
-            // panel3
-            // 
-            this.panel3.BackColor = System.Drawing.Color.SlateGray;
-            this.panel3.Controls.Add(this.WhatGame);
-            this.panel3.Controls.Add(this.NumPlayers);
-            this.panel3.Controls.Add(this.button5);
-            this.panel3.Controls.Add(this.PlayingG1);
-            this.panel3.Controls.Add(this.label5);
-            this.panel3.Location = new System.Drawing.Point(12, 292);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(255, 139);
-            this.panel3.TabIndex = 50;
             // 
             // onlineGrid
             // 
             this.onlineGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.onlineGrid.Location = new System.Drawing.Point(922, 86);
             this.onlineGrid.Name = "onlineGrid";
-            this.onlineGrid.Size = new System.Drawing.Size(166, 104);
+            this.onlineGrid.Size = new System.Drawing.Size(166, 213);
             this.onlineGrid.TabIndex = 51;
-            this.onlineGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.onlineGrid_CellContentClick);
+            // 
+            // lblPlayersOnline
+            // 
+            this.lblPlayersOnline.AutoSize = true;
+            this.lblPlayersOnline.BackColor = System.Drawing.Color.Transparent;
+            this.lblPlayersOnline.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPlayersOnline.ForeColor = System.Drawing.Color.White;
+            this.lblPlayersOnline.Location = new System.Drawing.Point(946, 55);
+            this.lblPlayersOnline.Name = "lblPlayersOnline";
+            this.lblPlayersOnline.Size = new System.Drawing.Size(124, 21);
+            this.lblPlayersOnline.TabIndex = 20;
+            this.lblPlayersOnline.Text = "Players Online";
+            // 
+            // joinGameBox
+            // 
+            this.joinGameBox.BackColor = System.Drawing.Color.Black;
+            this.joinGameBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.joinGameBox.Font = new System.Drawing.Font("Segoe UI Emoji", 9F);
+            this.joinGameBox.ForeColor = System.Drawing.Color.White;
+            this.joinGameBox.Location = new System.Drawing.Point(16, 323);
+            this.joinGameBox.Name = "joinGameBox";
+            this.joinGameBox.Size = new System.Drawing.Size(136, 16);
+            this.joinGameBox.TabIndex = 20;
+            // 
+            // lblJoin
+            // 
+            this.lblJoin.AutoSize = true;
+            this.lblJoin.BackColor = System.Drawing.Color.Transparent;
+            this.lblJoin.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblJoin.ForeColor = System.Drawing.Color.White;
+            this.lblJoin.Location = new System.Drawing.Point(12, 287);
+            this.lblJoin.Name = "lblJoin";
+            this.lblJoin.Size = new System.Drawing.Size(115, 21);
+            this.lblJoin.TabIndex = 21;
+            this.lblJoin.Text = "Search game:";
+            // 
+            // lblGames
+            // 
+            this.lblGames.AutoSize = true;
+            this.lblGames.BackColor = System.Drawing.Color.Transparent;
+            this.lblGames.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGames.ForeColor = System.Drawing.Color.White;
+            this.lblGames.Location = new System.Drawing.Point(946, 316);
+            this.lblGames.Name = "lblGames";
+            this.lblGames.Size = new System.Drawing.Size(128, 21);
+            this.lblGames.TabIndex = 52;
+            this.lblGames.Text = "Current Games";
+            // 
+            // gamesGrid
+            // 
+            this.gamesGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gamesGrid.Location = new System.Drawing.Point(922, 340);
+            this.gamesGrid.Name = "gamesGrid";
+            this.gamesGrid.Size = new System.Drawing.Size(166, 211);
+            this.gamesGrid.TabIndex = 53;
             // 
             // Form1
             // 
@@ -591,20 +535,22 @@
             this.BackgroundImage = global::WindowsFormsApplication1.Properties.Resources.fondo_oscuro;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1100, 609);
+            this.Controls.Add(this.lblGames);
+            this.Controls.Add(this.gamesGrid);
+            this.Controls.Add(this.joinGameBox);
+            this.Controls.Add(this.lblJoin);
+            this.Controls.Add(this.lblPlayersOnline);
             this.Controls.Add(this.onlineGrid);
-            this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.GameJoin);
             this.Controls.Add(this.panelBarraTitulo);
-            this.Controls.Add(this.button17);
-            this.Controls.Add(this.button11);
-            this.Controls.Add(this.button10);
+            this.Controls.Add(this.btnLast);
             this.Controls.Add(this.cardlbl);
-            this.Controls.Add(this.button8);
-            this.Controls.Add(this.button7);
-            this.Controls.Add(this.button6);
-            this.Controls.Add(this.button9);
+            this.Controls.Add(this.btnYellow);
+            this.Controls.Add(this.btnBlue);
+            this.Controls.Add(this.btnRed);
+            this.Controls.Add(this.btnGreen);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -618,43 +564,36 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.onlineGrid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gamesGrid)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnConn;
+        private System.Windows.Forms.Button btnDesconnect;
         private System.Windows.Forms.TextBox password;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblPassword;
+        private System.Windows.Forms.Label lblUsername;
         private System.Windows.Forms.TextBox username;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.RadioButton WhatGame;
-        private System.Windows.Forms.RadioButton NumPlayers;
-        private System.Windows.Forms.RadioButton PlayingG1;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button btnReg;
+        private System.Windows.Forms.Button btnLog;
+        private System.Windows.Forms.Button btnGreen;
+        private System.Windows.Forms.Button btnRed;
+        private System.Windows.Forms.Button btnBlue;
+        private System.Windows.Forms.Button btnYellow;
         private System.Windows.Forms.Label cardlbl;
-        private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.Button btnLast;
         private System.Windows.Forms.Button button13;
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.Button button15;
         private System.Windows.Forms.Button button16;
-        private System.Windows.Forms.Button button17;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Panel panelBarraTitulo;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Button button18;
         private System.Windows.Forms.Button minimizeBtn;
         private System.Windows.Forms.GroupBox GameJoin;
@@ -662,8 +601,12 @@
         private System.Windows.Forms.Label indicadorConexion_label;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.DataGridView onlineGrid;
+        private System.Windows.Forms.Label lblPlayersOnline;
+        private System.Windows.Forms.TextBox joinGameBox;
+        private System.Windows.Forms.Label lblJoin;
+        private System.Windows.Forms.Label lblGames;
+        private System.Windows.Forms.DataGridView gamesGrid;
     }
 }
 
