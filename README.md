@@ -20,4 +20,4 @@ URL del video de las funcionalidades: https://www.youtube.com/watch?v=zoix6lVM7
 Versión 4 generada por Hugo
 Versión 4 verificada por Iker y Jordi
 Versión 4 comunicada por Ivan
-URL del video de las funcionalidades: 
+URL del video de las funcionalidades: https://www.youtube.com/watch?v=wdHeZY8SxYw
