@@ -16,3 +16,8 @@ Versión 3 generada por Ivan
 Versión 3 verificada por Hugo y Jordi
 Versión 3 comunicada por Iker
 URL del video de las funcionalidades: https://www.youtube.com/watch?v=zoix6lVM7_o&t=7s
+
+Versión 4 generada por Hugo
+Versión 4 verificada por Iker y Jordi
+Versión 4 comunicada por Ivan
+URL del video de las funcionalidades: 

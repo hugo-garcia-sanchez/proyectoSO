@@ -11,7 +11,8 @@ CREATE TABLE Player (
 
 -- Crear una tabla para las partidas de UNO
 CREATE TABLE UnoTable (
-    tableId INT PRIMARY KEY AUTO_INCREMENT,  
+    tableId INT PRIMARY KEY AUTO_INCREMENT, 
+	tableName VARCHAR(255) NOT NULL,		-- He añadido nombre de partida
     playerCount INT NOT NULL, 
     cardCount INT NOT NULL, 
     endDateTime DATETIME NOT NULL,  -- Cambié a DATETIME para mejor manejo de fechas
@@ -36,14 +37,14 @@ INSERT INTO Player (username, password) VALUES ('Jordi', 'jordi');
 INSERT INTO Player (username, password) VALUES ('Ivan', 'ivan');
 
 -- Insertar una partida de ejemplo con un ganador válido
-INSERT INTO UnoTable (playerCount, cardCount, endDateTime, durationMinutes, winnerId)
-VALUES (4, 60, '2023-09-17 17:00:00', 10, 1);  -- 'winnerId' debe coincidir con un 'playerId' válido en Player
-INSERT INTO UnoTable (playerCount, cardCount, endDateTime, durationMinutes, winnerId)
-VALUES (4, 60, '2023-09-17 18:00:00', 10, 2);
-INSERT INTO UnoTable (playerCount, cardCount, endDateTime, durationMinutes, winnerId)
-VALUES (4, 60, '2023-09-17 19:00:00', 10, 3);
-INSERT INTO UnoTable (playerCount, cardCount, endDateTime, durationMinutes, winnerId)
-VALUES (4, 60, '2023-09-17 20:00:00', 10, 4);
+INSERT INTO UnoTable (tableName,playerCount, cardCount, endDateTime, durationMinutes, winnerId)
+VALUES ('Juego1', 4, 60, '2023-09-17 17:00:00', 10, 1);  -- 'winnerId' debe coincidir con un 'playerId' válido en Player
+INSERT INTO UnoTable (tableName,playerCount, cardCount, endDateTime, durationMinutes, winnerId)
+VALUES ('Partida 23', 4, 60, '2023-09-17 18:00:00', 10, 2);
+INSERT INTO UnoTable (tableName,playerCount, cardCount, endDateTime, durationMinutes, winnerId)
+VALUES ('private_game',4, 60, '2023-09-17 19:00:00', 10, 3);
+INSERT INTO UnoTable (tableName,playerCount, cardCount, endDateTime, durationMinutes, winnerId)
+VALUES ('prueba sfcic',4, 60, '2023-09-17 20:00:00', 10, 4);
 
 -- Insertar relaciones entre jugadores y la partida
 INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (1, 1);
