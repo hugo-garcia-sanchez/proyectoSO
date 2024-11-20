@@ -436,7 +436,7 @@ namespace ClientApplication
         private void Connection_Click(object sender, EventArgs e)
         {
             IPAddress direc = IPAddress.Parse("192.168.56.102");
-            IPEndPoint ipep = new IPEndPoint(direc, 9075);
+            IPEndPoint ipep = new IPEndPoint(direc, 9025);
             // CLIENTE IP: SHIVA =  10.4.119.5                VBOX = 192.168.56.102
             // CLIENTE PUERTO: SHIVA =  50061                 VBOX = 9050
 
