@@ -435,10 +435,10 @@ namespace ClientApplication
 
         private void Connection_Click(object sender, EventArgs e)
         {
-            IPAddress direc = IPAddress.Parse("10.4.119.5");
-            IPEndPoint ipep = new IPEndPoint(direc, 50061);
+            IPAddress direc = IPAddress.Parse("192.168.56.102");
+            IPEndPoint ipep = new IPEndPoint(direc, 9075);
             // CLIENTE IP: SHIVA =  10.4.119.5                VBOX = 192.168.56.102
-            // CLIENTE PUERTO: SHIVA =  50061            VBOX = 9070
+            // CLIENTE PUERTO: SHIVA =  50061                 VBOX = 9050
 
             server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
@@ -475,7 +475,7 @@ namespace ClientApplication
             onlineGrid.DataSource = null;
             onlineGrid.DataSource = dt;
 
-            string mensaje = "0/";
+            string mensaje = "0/" + username.Text;
             byte[] msg = Encoding.ASCII.GetBytes(mensaje);
             server.Send(msg);
 
