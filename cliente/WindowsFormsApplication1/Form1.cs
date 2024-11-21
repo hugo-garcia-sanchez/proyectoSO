@@ -139,21 +139,6 @@ namespace ClientApplication
             esperandoRespuesta = false;
         }
 
-        /*
-        private void EnviarMensajeUnirPartida(int partida) //mediante este proceso enviaremos un mensaje de unir partida
-        {
-            if (!isConnected)
-            {
-                MessageBox.Show("You are not connected to the server.");
-                return;
-            }
-
-            string mensaje = $"{10 + partida}/{username.Text}/{password.Text}/{partida}";
-            byte[] msg = Encoding.ASCII.GetBytes(mensaje);
-            server.Send(msg);
-            esperandoRespuesta = true;
-        }
-        */
         private void EnviarMensajeUnirPartida(string partida) 
             // Este nuevo unir partida permite mas flexibilidad (las partidas pueden tener ahora cualquier nombre,
             // no tiene pq ser un ID de partida.
@@ -171,6 +156,22 @@ namespace ClientApplication
             server.Send(msg);
             esperandoRespuesta = true;
         }
+
+        private void EnviarMensajeCrearPartida(string partida)
+        // Este nuevo crear partida 
+        {
+            if (!isConnected)
+            {
+                MessageBox.Show("You are not connected to the server.");
+                return;
+            }
+
+            string mensaje = $"{25}/{username.Text}/{password.Text}/{partida}";
+            byte[] msg = Encoding.ASCII.GetBytes(mensaje);
+            server.Send(msg);
+            esperandoRespuesta = true;
+        }
+
         public void InvitationSent(string invitedList)
         {
             MessageBox.Show("Invitaion to " + invitedList + " received correctly", "Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -257,6 +258,7 @@ namespace ClientApplication
                             case 13:
                             case 14:
                             case 20:
+                            case 25:
                                 if (esperandoRespuesta)
                                 {
                                     MostrarMensaje(response);
@@ -436,7 +438,7 @@ namespace ClientApplication
         private void Connection_Click(object sender, EventArgs e)
         {
             IPAddress direc = IPAddress.Parse("192.168.56.102");
-            IPEndPoint ipep = new IPEndPoint(direc, 9025);
+            IPEndPoint ipep = new IPEndPoint(direc, 9032);
             // CLIENTE IP: SHIVA =  10.4.119.5                VBOX = 192.168.56.102
             // CLIENTE PUERTO: SHIVA =  50061                 VBOX = 9050
 
@@ -577,25 +579,10 @@ namespace ClientApplication
             string partida = txtBuscarPartida.Text;
             EnviarMensajeUnirPartida(partida);
         }
-
-        private void Unir1_Click(object sender, EventArgs e)
+        private void btnCreateGame_Click(object sender, EventArgs e)
         {
-            //EnviarMensajeUnirPartida(1);
-        }
-
-        private void Unir2_Click(object sender, EventArgs e)
-        {
-            //EnviarMensajeUnirPartida(2);
-        }
-
-        private void Unir3_Click(object sender, EventArgs e)
-        {
-            //EnviarMensajeUnirPartida(3);
-        }
-
-        private void Unir4_Click(object sender, EventArgs e)
-        {
-            //EnviarMensajeUnirPartida(4);
+            string partida = txtBuscarPartida.Text;
+            EnviarMensajeCrearPartida(partida);
         }
 
         //------------------------- JUEGO  -------------------------\\
@@ -776,6 +763,8 @@ namespace ClientApplication
                 }
             }
         }
+
+        
 
         private void card3_Click(object sender, EventArgs e)
         {

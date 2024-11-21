@@ -13,10 +13,10 @@ CREATE TABLE Player (
 CREATE TABLE UnoTable (
     tableId INT PRIMARY KEY AUTO_INCREMENT, 
 	tableName VARCHAR(255) NOT NULL,		-- He añadido nombre de partida
-    playerCount INT NOT NULL, 
-    cardCount INT NOT NULL, 
-    endDateTime DATETIME NOT NULL,  -- Cambié a DATETIME para mejor manejo de fechas
-    durationMinutes INT NOT NULL, 
+    playerCount INT, 
+    cardCount INT, 
+    endDateTime DATETIME,  -- Cambié a DATETIME para mejor manejo de fechas
+    durationMinutes INT, 
     winnerId INT,  
     FOREIGN KEY (winnerId) REFERENCES Player(playerId)  -- Clave foránea que referencia a Player
 ) ENGINE = InnoDB;
