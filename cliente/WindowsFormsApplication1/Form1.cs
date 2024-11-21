@@ -16,6 +16,7 @@ namespace ClientApplication
 {
     public partial class Form1 : Form
     {
+        private int numFormOG = 0;
         private Socket server;
         private DataTable dt = new DataTable();
         BindingSource bindingSourcePlayers = new BindingSource();
@@ -151,7 +152,7 @@ namespace ClientApplication
                 return;
             }
 
-            string mensaje = $"{20}/{username.Text}/{password.Text}/{partida}";
+            string mensaje = $"{20}/{numFormOG}/{username.Text}/{password.Text}/{partida}";
             byte[] msg = Encoding.ASCII.GetBytes(mensaje);
             server.Send(msg);
             esperandoRespuesta = true;
@@ -166,7 +167,7 @@ namespace ClientApplication
                 return;
             }
 
-            string mensaje = $"{25}/{username.Text}/{password.Text}/{partida}";
+            string mensaje = $"{25}/{numFormOG}/{username.Text}/{password.Text}/{partida}";
             byte[] msg = Encoding.ASCII.GetBytes(mensaje);
             server.Send(msg);
             esperandoRespuesta = true;
@@ -210,8 +211,8 @@ namespace ClientApplication
                         string mensajeCompleto = Encoding.ASCII.GetString(msg2, 0, bytesReceived).Trim();
                         string[] trozos = mensajeCompleto.Split('/');
                         int codigo = Convert.ToInt32(trozos[0]);
-                        string response = trozos.Length > 1 ? trozos[1].Split('\0')[0] : string.Empty;
-
+                        string response = trozos.Length > 1 ? string.Join("/", trozos.Skip(1)) : string.Empty;
+                        int numForm;
                         Console.WriteLine($"Mensaje completo recibido: {mensajeCompleto}");
                         Console.WriteLine($"Código recibido: {codigo}");
 
@@ -226,10 +227,16 @@ namespace ClientApplication
                         {
                             if (codigo == 16)
                             {
+                                trozos = response.Split('/');
+                                numForm = Convert.ToInt32(trozos[0]);
+                                response = trozos[1];
                                 cardlbl.Text = response;
                             }
                             else if (codigo == 27)
                             {
+                                trozos = response.Split('/');
+                                numForm = Convert.ToInt32(trozos[0]);
+                                response = trozos[1];
                                 if (trozos.Length > 1)
                                 {
                                     string[] ListaCartas = response.Split(' ');
@@ -259,6 +266,9 @@ namespace ClientApplication
                             case 14:
                             case 20:
                             case 25:
+                                trozos = response.Split('/');
+                                numForm = Convert.ToInt32(trozos[0]);
+                                response = trozos[1];
                                 if (esperandoRespuesta)
                                 {
                                     MostrarMensaje(response);
@@ -267,18 +277,31 @@ namespace ClientApplication
                                 break;
 
                             case 15:
-                                ProcesarListaJugadores(trozos);
+                                trozos = response.Split('/');
+                                numForm = Convert.ToInt32(trozos[0]);
+                                string[] listaN = trozos.Length > 1 ? trozos.Skip(1).ToArray() : new string[0];
+
+                                ProcesarListaJugadores(listaN);
                                 break;
 
                             case 22: // Maneja 4 cartas
+                                trozos = response.Split('/');
+                                numForm = Convert.ToInt32(trozos[0]);
+                                response = trozos[1];
                                 ProcesarCartasJugador(response, 4);
                                 break;
 
                             case 21: // Maneja 1 carta
+                                trozos = response.Split('/');
+                                numForm = Convert.ToInt32(trozos[0]);
+                                response = trozos[1];
                                 ProcesarCartasJugador(response, 1);
                                 break;
                             case 97:  //INVITATION RECEIVED
                                 {
+                                    trozos = response.Split('/');
+                                    numForm = Convert.ToInt32(trozos[0]);
+                                    response = trozos[1];
                                     int type_operation = Convert.ToInt32(response);
 
                                     
@@ -334,12 +357,14 @@ namespace ClientApplication
         {
             Console.WriteLine($"Mensaje recibido del servidor: {string.Join("/", trozos)}");
 
-            if (trozos.Length > 2 && !string.IsNullOrEmpty(trozos[2].Trim()))
+            // Usar trozos[1] directamente para la lista de jugadores
+            if (trozos.Length > 1 && !string.IsNullOrEmpty(trozos[1].Trim()))
             {
-                string[] connectedPlayerList = trozos[2]
+                // Procesar lista de jugadores conectados desde trozos[1]
+                string[] connectedPlayerList = trozos[1]
                     .Split(',')
-                    .Select(p => p.Trim())
-                    .Where(p => !string.IsNullOrEmpty(p))
+                    .Select(p => p.Trim())                // Eliminar espacios en blanco
+                    .Where(p => !string.IsNullOrEmpty(p)) // Filtrar elementos vacíos
                     .ToArray();
 
                 Console.WriteLine("Lista actual de jugadores conectados:");
@@ -348,6 +373,7 @@ namespace ClientApplication
                     Console.WriteLine($"- {player}");
                 }
 
+                // Eliminar jugadores desconectados de la tabla `dt`
                 for (int i = dt.Rows.Count - 1; i >= 0; i--)
                 {
                     DataRow row = dt.Rows[i];
@@ -360,6 +386,7 @@ namespace ClientApplication
                     }
                 }
 
+                // Añadir nuevos jugadores conectados que no estén en `dt`
                 foreach (string playerName in connectedPlayerList)
                 {
                     bool exists = dt.AsEnumerable().Any(row => row.Field<string>("PlayerName") == playerName);
@@ -371,11 +398,12 @@ namespace ClientApplication
                     }
                 }
 
+                // Actualizar el DataGridView
                 onlineGrid.DataSource = dt;
                 onlineGrid.Refresh();
                 Console.WriteLine("Actualización del DataGridView completada.");
             }
-            else if (trozos.Length > 2)
+            else if (trozos.Length > 1)
             {
                 Console.WriteLine("No hay jugadores conectados. Limpiando la tabla.");
                 dt.Rows.Clear();
@@ -387,6 +415,7 @@ namespace ClientApplication
                 Console.WriteLine("Mensaje mal formado o sin datos de jugadores.");
             }
         }
+
 
         private void ProcesarCartasJugador(string response, int cantidadCartasEsperadas)
         {
@@ -438,7 +467,7 @@ namespace ClientApplication
         private void Connection_Click(object sender, EventArgs e)
         {
             IPAddress direc = IPAddress.Parse("192.168.56.102");
-            IPEndPoint ipep = new IPEndPoint(direc, 9032);
+            IPEndPoint ipep = new IPEndPoint(direc, 9004);
             // CLIENTE IP: SHIVA =  10.4.119.5                VBOX = 192.168.56.102
             // CLIENTE PUERTO: SHIVA =  50061                 VBOX = 9050
 
@@ -477,7 +506,7 @@ namespace ClientApplication
             onlineGrid.DataSource = null;
             onlineGrid.DataSource = dt;
 
-            string mensaje = "0/" + username.Text;
+            string mensaje = "0/" + numFormOG + "/" + username.Text;
             byte[] msg = Encoding.ASCII.GetBytes(mensaje);
             server.Send(msg);
 
@@ -506,7 +535,7 @@ namespace ClientApplication
                 return;
             }
 
-            string mensaje = "1/" + username.Text + "/" + password.Text;
+            string mensaje = "1/" + numFormOG + "/" + username.Text + "/" + password.Text;
             byte[] msg = Encoding.ASCII.GetBytes(mensaje);
             server.Send(msg);
             esperandoRespuesta = true;
@@ -528,7 +557,7 @@ namespace ClientApplication
                 {
                     alreadyLogged = true;
                     selectedUser = username.Text;
-                    string mensaje = "2/" + username.Text + "/" + password.Text;
+                    string mensaje = "2/" + numFormOG + "/" + username.Text + "/" + password.Text;
                     byte[] msg = Encoding.ASCII.GetBytes(mensaje);
                     server.Send(msg);
                     esperandoRespuesta = true;
@@ -547,22 +576,26 @@ namespace ClientApplication
 
         private void NotiRed_Click(object sender, EventArgs e)
         {
-            EnviarMensajeCodigo("6/");
+            string premensaje = "6/" + numFormOG + "/";
+            EnviarMensajeCodigo(premensaje);
         }
 
         private void NotiBlue_Click(object sender, EventArgs e)
         {
-            EnviarMensajeCodigo("7/");
+            string premensaje = "7/" + numFormOG + "/";
+            EnviarMensajeCodigo(premensaje);
         }
 
         private void NotiYellow_Click(object sender, EventArgs e)
         {
-            EnviarMensajeCodigo("8/");
+            string premensaje = "8/" + numFormOG + "/";
+            EnviarMensajeCodigo(premensaje);
         }
 
         private void NotiGreen_Click(object sender, EventArgs e)
         {
-            EnviarMensajeCodigo("9/");
+            string premensaje = "9/" + numFormOG + "/";
+            EnviarMensajeCodigo(premensaje);
         }
 
         private void howitworks_Click(object sender, EventArgs e)
@@ -620,31 +653,31 @@ namespace ClientApplication
         }
 
 
-        private void fourcards_Click(object sender, EventArgs e)
-        {
-            if (server == null || !server.Connected)
-            {
-                MessageBox.Show("You are not connected to the server.");
-                return;
-            }
+        //private void fourcards_Click(object sender, EventArgs e)
+        //{
+        //    if (server == null || !server.Connected)
+        //    {
+        //        MessageBox.Show("You are not connected to the server.");
+        //        return;
+        //    }
 
-            // Send a request to the server to get the list of connected players
-            string mensaje = "22/LIST/";
-            byte[] msg = Encoding.ASCII.GetBytes(mensaje);
+        //    // Send a request to the server to get the list of connected players
+        //    string mensaje = "22/LIST/";
+        //    byte[] msg = Encoding.ASCII.GetBytes(mensaje);
 
-            try
-            {
-                server.Send(msg);
-            }
-            catch (SocketException ex)
-            {
-                MessageBox.Show("Error sending data to the server: " + ex.Message);
-                return;
-            }
-            esperandoRespuesta = false;
+        //    try
+        //    {
+        //        server.Send(msg);
+        //    }
+        //    catch (SocketException ex)
+        //    {
+        //        MessageBox.Show("Error sending data to the server: " + ex.Message);
+        //        return;
+        //    }
+        //    esperandoRespuesta = false;
 
 
-        }
+        //}
 
 
         Carta cartaJugador1, cartaJugador2, cartaJugador3, cartaJugador4, cartaMedio;
@@ -670,56 +703,56 @@ namespace ClientApplication
       
      
 
-        private void card1_Click(object sender, EventArgs e)
-        {
-            if (PuedeTirarCarta(cartaJugador1, cartaMedio))
-            {
-                cartaMedio.Color = cartaJugador1.Color;
-                buttoncartamedio.BackColor = buttoncarta1.BackColor;
-                cartaJugador1.Color = "Gray";
-                buttoncarta1.BackColor = Color.Gray;
+        //private void card1_Click(object sender, EventArgs e)
+        //{
+        //    if (PuedeTirarCarta(cartaJugador1, cartaMedio))
+        //    {
+        //        cartaMedio.Color = cartaJugador1.Color;
+        //        buttoncartamedio.BackColor = buttoncarta1.BackColor;
+        //        cartaJugador1.Color = "Gray";
+        //        buttoncarta1.BackColor = Color.Gray;
 
 
 
-                cartaMedio.Numero = cartaJugador1.Numero;
-                buttoncartamedio.Text = buttoncarta1.Text;
-                cartaJugador1.Numero = null;
-                buttoncarta1.Text = "";
+        //        cartaMedio.Numero = cartaJugador1.Numero;
+        //        buttoncartamedio.Text = buttoncarta1.Text;
+        //        cartaJugador1.Numero = null;
+        //        buttoncarta1.Text = "";
 
-                EnviarMensajeCodigoCarta("23/" + cartaMedio.Numero + "," + cartaMedio.Color);
+        //        EnviarMensajeCodigoCarta("23/" + cartaMedio.Numero + "," + cartaMedio.Color);
 
-            }
-            else
-            {
-                MessageBox.Show("No puedes tirar esta carta");
-            }
-            //esperandoRespuesta = true;
-        }
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("No puedes tirar esta carta");
+        //    }
+        //    //esperandoRespuesta = true;
+        //}
   
 
-        private void card2_Click(object sender, EventArgs e)
-        {
-            if (PuedeTirarCarta(cartaJugador2, cartaMedio))
-            {
-                cartaMedio.Color = cartaJugador2.Color;
-                buttoncartamedio.BackColor = buttoncarta2.BackColor;
-                cartaJugador2.Color = "Gray";
-                buttoncarta2.BackColor = Color.Gray;
+        //private void card2_Click(object sender, EventArgs e)
+        //{
+        //    if (PuedeTirarCarta(cartaJugador2, cartaMedio))
+        //    {
+        //        cartaMedio.Color = cartaJugador2.Color;
+        //        buttoncartamedio.BackColor = buttoncarta2.BackColor;
+        //        cartaJugador2.Color = "Gray";
+        //        buttoncarta2.BackColor = Color.Gray;
 
-                cartaMedio.Numero = cartaJugador2.Numero;
-                buttoncartamedio.Text = buttoncarta2.Text;
-                cartaJugador2.Numero = null;
-                buttoncarta2.Text = "";
-                EnviarMensajeCodigoCarta("23/" + cartaMedio.Numero + "," + cartaMedio.Color);
+        //        cartaMedio.Numero = cartaJugador2.Numero;
+        //        buttoncartamedio.Text = buttoncarta2.Text;
+        //        cartaJugador2.Numero = null;
+        //        buttoncarta2.Text = "";
+        //        EnviarMensajeCodigoCarta("23/" + cartaMedio.Numero + "," + cartaMedio.Color);
 
-            }
-            else
-            {
-                MessageBox.Show("No puedes tirar esta carta");
-            }
-            //esperandoRespuesta = true;
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("No puedes tirar esta carta");
+        //    }
+        //    //esperandoRespuesta = true;
 
-        }
+        //}
 
         private void panelBarraTitulo_Paint(object sender, PaintEventArgs e)
         {
@@ -736,7 +769,7 @@ namespace ClientApplication
                 {
                     invited = onlineGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
 
-                    string mensaje = "97/" + selectedUser + "/" + invited + "/";
+                    string mensaje = "97/" + numFormOG + "/" + selectedUser + "/" + invited + "/";
                     MessageBox.Show(mensaje);
                     byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
                     server.Send(msg);
@@ -756,7 +789,7 @@ namespace ClientApplication
                 {
                     invited = onlineGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
 
-                    string mensaje = "97/" + selectedUser + "/" + invited + "/";
+                    string mensaje = "97/" + numFormOG + "/" + selectedUser + "/" + invited + "/";
                     MessageBox.Show(mensaje);
                     byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
                     server.Send(msg);
@@ -764,84 +797,112 @@ namespace ClientApplication
             }
         }
 
+        private void buttoncartamedio_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttoncarta4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttoncarta2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void card1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void card2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblPlayersOnline_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        //private void card3_Click(object sender, EventArgs e)
+        //{
+        //    if (PuedeTirarCarta(cartaJugador3, cartaMedio))
+        //    {
+
+        //        cartaMedio.Color = cartaJugador3.Color;
+        //        buttoncartamedio.BackColor = buttoncarta3.BackColor;
+        //        cartaJugador3.Color = "Gray";
+        //        buttoncarta3.BackColor = Color.Gray;
+
+        //        cartaMedio.Numero = cartaJugador3.Numero;
+        //        buttoncartamedio.Text = buttoncarta3.Text;
+        //        cartaJugador3.Numero = null;
+        //        buttoncarta3.Text = "";
+        //        EnviarMensajeCodigoCarta("23/" + cartaMedio.Numero + "," + cartaMedio.Color);
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("No puedes tirar esta carta");
+        //    }
+        //    //esperandoRespuesta = true;
+
+        //}
+
         
 
-        private void card3_Click(object sender, EventArgs e)
-        {
-            if (PuedeTirarCarta(cartaJugador3, cartaMedio))
-            {
 
-                cartaMedio.Color = cartaJugador3.Color;
-                buttoncartamedio.BackColor = buttoncarta3.BackColor;
-                cartaJugador3.Color = "Gray";
-                buttoncarta3.BackColor = Color.Gray;
+        //private void card4_Click(object sender, EventArgs e)
+        //{
+        //    if (PuedeTirarCarta(cartaJugador4, cartaMedio))
+        //    {
+        //        cartaMedio.Color = cartaJugador4.Color;
+        //        buttoncartamedio.BackColor = buttoncarta4.BackColor;
+        //        cartaJugador4.Color = "Gray";
+        //        buttoncarta4.BackColor = Color.Gray;
 
-                cartaMedio.Numero = cartaJugador3.Numero;
-                buttoncartamedio.Text = buttoncarta3.Text;
-                cartaJugador3.Numero = null;
-                buttoncarta3.Text = "";
-                EnviarMensajeCodigoCarta("23/" + cartaMedio.Numero + "," + cartaMedio.Color);
-            }
-            else
-            {
-                MessageBox.Show("No puedes tirar esta carta");
-            }
-            //esperandoRespuesta = true;
+        //        cartaMedio.Numero = cartaJugador4.Numero;
+        //        buttoncartamedio.Text = buttoncarta4.Text;
+        //        cartaJugador4.Numero = null;
+        //        buttoncarta4.Text = "";
+        //        EnviarMensajeCodigoCarta("23/" + cartaMedio.Numero + "," + cartaMedio.Color);
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("No puedes tirar esta carta");
+        //    }
+        //    //esperandoRespuesta = true;
 
-        }
-
-        
-
-
-        private void card4_Click(object sender, EventArgs e)
-        {
-            if (PuedeTirarCarta(cartaJugador4, cartaMedio))
-            {
-                cartaMedio.Color = cartaJugador4.Color;
-                buttoncartamedio.BackColor = buttoncarta4.BackColor;
-                cartaJugador4.Color = "Gray";
-                buttoncarta4.BackColor = Color.Gray;
-
-                cartaMedio.Numero = cartaJugador4.Numero;
-                buttoncartamedio.Text = buttoncarta4.Text;
-                cartaJugador4.Numero = null;
-                buttoncarta4.Text = "";
-                EnviarMensajeCodigoCarta("23/" + cartaMedio.Numero + "," + cartaMedio.Color);
-            }
-            else
-            {
-                MessageBox.Show("No puedes tirar esta carta");
-            }
-            //esperandoRespuesta = true;
-
-        }
+        //}
 
 
 
-        private void middlecard_Click(object sender, EventArgs e)
-        {
-            if (server == null || !server.Connected)
-            {
-                MessageBox.Show("You are not connected to the server.");
-                return;
-            }
+        //private void middlecard_Click(object sender, EventArgs e)
+        //{
+        //    if (server == null || !server.Connected)
+        //    {
+        //        MessageBox.Show("You are not connected to the server.");
+        //        return;
+        //    }
 
-            // Send a request to the server to get the list of connected players
-            string mensaje = "21/LIST/";
-            byte[] msg = Encoding.ASCII.GetBytes(mensaje);
+        //    // Send a request to the server to get the list of connected players
+        //    string mensaje = "21/LIST/";
+        //    byte[] msg = Encoding.ASCII.GetBytes(mensaje);
 
-            try
-            {
-                server.Send(msg);
-            }
-            catch (SocketException ex)
-            {
-                MessageBox.Show("Error sending data to the server: " + ex.Message);
-                return;
-            }
-            //esperandoRespuesta = false;
+        //    try
+        //    {
+        //        server.Send(msg);
+        //    }
+        //    catch (SocketException ex)
+        //    {
+        //        MessageBox.Show("Error sending data to the server: " + ex.Message);
+        //        return;
+        //    }
+        //    //esperandoRespuesta = false;
 
-        }
+        //}
 
 
 

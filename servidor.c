@@ -98,9 +98,9 @@ void handleDisconnect(int sock_conn, char *firstVar, int numForm) {
 	// Notificar a todos los clientes conectados
 	char notificacion[255];
 	if (playerCount == 0) {
-		strcpy(notificacion, "15/none");
+		sprintf(notificacion, "15/%d/none", numForm);
 	} else {
-		sprintf(notificacion, "15/%s", accumulatedPlayers);
+		sprintf(notificacion, "15/%d/%s", numForm, accumulatedPlayers);
 	}
 	
 	for (int j = 0; j < i; j++) {
@@ -569,7 +569,7 @@ void *AtenderCliente(void *socket) {
 		if ((code == 6) || (code == 7) || (code == 8) || (code == 9)) {
 			pthread_mutex_lock(&mutex);
 			char notificacion[255];
-			sprintf(notificacion, "16/%s", Card1);
+			sprintf(notificacion, "16/%d/%s", numForm, Card1);
 			
 			printf(notificacion);
 			pthread_mutex_unlock(&mutex);
@@ -584,9 +584,9 @@ void *AtenderCliente(void *socket) {
 			pthread_mutex_lock(&mutex);
 			char notificacion1[255];
 			if (strlen(accumulatedPlayers) == 0) {
-				strcpy(notificacion1, "15/none");
+				sprintf(notificacion1, "15/%d/none",numForm);
 			} else {
-				sprintf(notificacion1, "15/%s", accumulatedPlayers);
+				sprintf(notificacion1, "15/%d/%s", numForm, accumulatedPlayers);
 			}
 			for (int j = 0; j < playerCount; j++) {
 				if (sockets[j] != NULL) {
