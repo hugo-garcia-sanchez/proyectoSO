@@ -21,8 +21,3 @@ Versión 4 generada por Hugo
 Versión 4 verificada por Iker y Jordi
 Versión 4 comunicada por Ivan
 URL del video de las funcionalidades: https://www.youtube.com/watch?v=wdHeZY8SxYw
-
-Versión 5 generada por Ivan
-Versión 5 verificada por Iker y Jordi
-Versión 5 comunicada por Hugo
-URL del video de las funcionalidades: https://youtu.be/o3U4u2ET55Y?feature=shared
