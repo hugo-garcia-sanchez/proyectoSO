@@ -26,6 +26,7 @@
 
 // 20: *Nuevo* solicitante de partida (en el futuro este eliminiara a los codigos 11-14)
 
+// 24: chat
 
 
 
@@ -36,6 +37,7 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; // Estructura necesaria para 
 int i;	//Contador de conexiones/sockets
 int sockets[100]; // Vector de sockets
 char Card1[20];	//Estructura para almacenar la carta actual
+char messagechat[200];
 int playerCount; //Contador de jugadores
 char accumulatedPlayers[1024] = "";  // Variable para pasar nombres de jugadores al cliente
 char connectedPlayers[20][50];  // Vector de nombres de jugadores conectados
@@ -66,7 +68,7 @@ void GenerarMensajeAleatorio(char* mensaje)
 		}
 	}
 }
-void handleDisconnect(int sock_conn, char *firstVar, int numForm) {
+void handleDisconnect(int sock_conn, char *firstVar) {
 	pthread_mutex_lock(&mutex);
 	
 	int found = 0;
@@ -98,9 +100,9 @@ void handleDisconnect(int sock_conn, char *firstVar, int numForm) {
 	// Notificar a todos los clientes conectados
 	char notificacion[255];
 	if (playerCount == 0) {
-		sprintf(notificacion, "15/%d/none", numForm);
+		strcpy(notificacion, "15/none");
 	} else {
-		sprintf(notificacion, "15/%d/%s", numForm, accumulatedPlayers);
+		sprintf(notificacion, "15/%s", accumulatedPlayers);
 	}
 	
 	for (int j = 0; j < i; j++) {
@@ -114,7 +116,7 @@ void handleDisconnect(int sock_conn, char *firstVar, int numForm) {
 
 
 
-void handleRegister(int sock_conn, MYSQL *conn, char *firstVar, char *secondVar, char *response, int numForm) {
+void handleRegister(int sock_conn, MYSQL *conn, char *firstVar, char *secondVar, char *response) {
 	// Esta funcion primero comprueba si el usuario se encuentra en la base de datos.
 	// En caso afirmativo, impide que se pueda volver a registrar.
 	// Si el usuario (su nombre) no se encuentra en la base de datos, le permite registrarse
@@ -124,33 +126,33 @@ void handleRegister(int sock_conn, MYSQL *conn, char *firstVar, char *secondVar,
 	int err = mysql_query(conn, query);
 	if (err != 0) {
 		printf("Error querying the database: %u %s\n", mysql_errno(conn), mysql_error(conn));
-		sprintf(response, "1/%d/Error logging in player %s", numForm, firstVar);
+		sprintf(response, "2/Error logging in player %s", firstVar);
 	} else {
 		MYSQL_RES *result = mysql_store_result(conn);
 		if (result) {
 			if (mysql_num_rows(result) != 0) {
 				// comprobamos si ya existe el jugador
 				//MYSQL_ROW ID = mysql_fetch_row(result);
-				sprintf(response, "1/%d/This username is already registered, please choose another one or log in.", numForm);
+				sprintf(response, "1/This username is already registered, please choose another one or log in.");
 			} else {
 				//si no existe, lo registramos
 				query[0]= '\0';
 				sprintf(query, "INSERT INTO Player (username, password) VALUES ('%s', '%s')", firstVar, secondVar);
 				if (mysql_query(conn, query)) {
 					printf("Error inserting into the database: %u %s\n", mysql_errno(conn), mysql_error(conn));
-					sprintf(response, "1/%d/Error registering player %s", numForm, firstVar);
+					sprintf(response, "1/Error registering player %s", firstVar);
 				} else {
-					sprintf(response, "1/%d/Player %s successfully registered", numForm, firstVar);
+					sprintf(response, "1/Player %s successfully registered", firstVar);
 					printf("%s", response);
 				}
 			}
 			mysql_free_result(result);
 		} else {
-			sprintf(response, "1/%d/Some error has occurred before the register.", numForm);
+			sprintf(response, "1/Some error has occurred before the register.");
 		}
+		
 	}
 }
-
 int BuscarInvitado(char *invitado) {
 	int found = 0;
 	int i = 0;
@@ -171,7 +173,7 @@ int BuscarInvitado(char *invitado) {
 	}
 }
 
-void handleLogin(int sock_conn, MYSQL *conn, char *firstVar, char *secondVar, char *response, int numForm) {
+void handleLogin(int sock_conn, MYSQL *conn, char *firstVar, char *secondVar, char *response) {
 	// Esta funcion permite a un jugador iniciar sesion si ya esta registrado.
 	// Si el jugador NO existe en la base de datos, notifica al usuario de que debe registrarse antes o de que se ha equivocado de password.
 	char query[512];
@@ -180,14 +182,14 @@ void handleLogin(int sock_conn, MYSQL *conn, char *firstVar, char *secondVar, ch
 	
 	if (err != 0) {
 		printf("Error querying the database: %u %s\n", mysql_errno(conn), mysql_error(conn));
-		sprintf(response, "2/%d/Error logging in player %s", numForm, firstVar);
+		sprintf(response, "2/Error logging in player %s", firstVar);
 	} else {
 		MYSQL_RES *result = mysql_store_result(conn);
 		if (result) {
 			if (mysql_num_rows(result) != 0) {
 				// Si no hay resultados significa que el jugador no existe en la base de datos, si hay, se notifica correctamente.
 				MYSQL_ROW ID = mysql_fetch_row(result);
-				sprintf(response, "2/%d/Player %s has logged in with ID %s.", numForm, firstVar, ID[0]);
+				sprintf(response, "2/Player %s has logged in with ID %s.", firstVar, ID[0]);
 				// En la seccion siguiente el jugador es introducido en la lista de jugadores acumulados (que se pasa al cliente para
 				// introducirla en la DataGridView), y se almacena en el vector de nombres de jugadores conectados.
 				char playerCheck[512];
@@ -204,17 +206,17 @@ void handleLogin(int sock_conn, MYSQL *conn, char *firstVar, char *secondVar, ch
 				}
 			} else {
 				// Usuario o contraseña incorrectos
-				sprintf(response, "2/%d/Wrong username or password, please try again.", numForm);
+				sprintf(response, "2/Wrong username or password, please try again.");
 			}
 			mysql_free_result(result);
 		} else {
-			sprintf(response, "2/%d/Some error has occurred before logging in.", numForm);
+			sprintf(response, "2/Some error has occurred before logging in.");
 		}
 	}
 }
 
 
-void handleCardColor(char *color, int numForm) {
+void handleCardColor(char *color) {
 	// Envia el color de la carta. Para NOTIFICACION
 	strcpy(Card1, color);
 }
@@ -226,7 +228,59 @@ void handleCardColor(char *color, int numForm) {
 /*	/}/*/
 
 
-void obtainAvailableGames(int sock_conn, MYSQL *conn, int code, char *firstVar, char *secondVar, char *thirdVar, char *response, int numForm) {
+
+
+/*
+void handlePlayerGameRelation(int sock_conn, MYSQL *conn, int code, char *firstVar, char *secondVar, char *response) {
+// Esta funcion gestiona que jugadores estan en que partidas.
+int tableId = 15 - code;
+char query[512];
+sprintf(query, "SELECT playerID FROM Player WHERE username = '%s' AND password = '%s'", firstVar, secondVar);
+int err = mysql_query(conn, query);
+if (err != 0) {
+printf("Error querying the database: %u %s\n", mysql_errno(conn), mysql_error(conn));
+sprintf(response, "%d/Error retrieving player ID for user %s", code, firstVar);
+
+} else {
+MYSQL_RES *result = mysql_store_result(conn);
+if (result == NULL) {
+printf("Error storing result: %u %s\n", mysql_errno(conn), mysql_error(conn));
+sprintf(response, "%d/Error retrieving result for user %s", code, firstVar);
+
+} else {
+MYSQL_ROW row = mysql_fetch_row(result);
+if (row) {
+char playerId[10];
+strcpy(playerId, row[0]);
+char check_table_query[512];
+sprintf(check_table_query, "SELECT tableId FROM UnoTable WHERE tableId = %d", tableId);
+err = mysql_query(conn, check_table_query);
+MYSQL_RES *table_result = mysql_store_result(conn);
+if (table_result == NULL || mysql_num_rows(table_result) == 0) {
+sprintf(response, "%d/Error: table %d does not exist.", code, tableId);
+mysql_free_result(table_result);
+} else {
+char insert_query[512];
+sprintf(insert_query, "INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (%d, %d)", atoi(playerId), tableId);
+if (mysql_query(conn, insert_query) != 0) {
+printf("%d/Error inserting into PlayerGameRelation: %u %s\n", code, mysql_errno(conn), mysql_error(conn));
+sprintf(response, "%d/Error adding player %s to table %d", code, firstVar, tableId);
+} else {
+sprintf(response, "%d/Player %s successfully added to table %d", code, firstVar, tableId);
+}
+}
+mysql_free_result(table_result);
+} else {
+sprintf(response, "%d/Player not found or wrong password.", code);
+}
+mysql_free_result(result);
+}
+}
+}
+
+*/
+
+void obtainAvailableGames(int sock_conn, MYSQL *conn, int code, char *firstVar, char *secondVar, char *thirdVar, char *response) {
 	// Code 21
 	char query[512];
 	sprintf(query, "SELECT tableName FROM UnoTable");
@@ -254,7 +308,7 @@ void obtainAvailableGames(int sock_conn, MYSQL *conn, int code, char *firstVar, 
 	}
 }
 
-void playerJoinsGame(int sock_conn, MYSQL *conn, int code, char *firstVar, char *secondVar,char *thirdVar, char *response, int numForm) {
+void playerJoinsGame(int sock_conn, MYSQL *conn, int code, char *firstVar, char *secondVar,char *thirdVar, char *response) {
 	// Esta funcion gestiona que jugadores estan en que partidas. Gestiona los JOIN !!!!!!
 	//int tableId = 15 - code;
 	char query[512];
@@ -262,13 +316,13 @@ void playerJoinsGame(int sock_conn, MYSQL *conn, int code, char *firstVar, char 
 	int err = mysql_query(conn, query);
 	if (err != 0) {
 		printf("Error querying the database: %u %s\n", mysql_errno(conn), mysql_error(conn));
-		sprintf(response, "20/%d/Error retrieving player ID for user %s", numForm, firstVar);
+		sprintf(response, "20/Error retrieving player ID for user %s", firstVar);
 		
 	} else {
 		MYSQL_RES *result = mysql_store_result(conn);
 		if (result == NULL) {
 			printf("Error storing result: %u %s\n", mysql_errno(conn), mysql_error(conn));
-			sprintf(response, "20/%d/Error retrieving result for user %s", numForm, firstVar);
+			sprintf(response, "20/Error retrieving result for user %s", firstVar);
 			
 		} else {
 			MYSQL_ROW row = mysql_fetch_row(result);
@@ -280,7 +334,7 @@ void playerJoinsGame(int sock_conn, MYSQL *conn, int code, char *firstVar, char 
 				err = mysql_query(conn, check_table_query);
 				MYSQL_RES *table_result = mysql_store_result(conn);
 				if (table_result == NULL || mysql_num_rows(table_result) == 0) {
-					sprintf(response, "20/%d/Error: Game %s does not exist.", numForm, thirdVar);
+					sprintf(response, "20/Error: Game %s does not exist.", thirdVar);
 					//mysql_free_result(table_result);
 				} else {
 					MYSQL_ROW table_row = mysql_fetch_row(table_result);
@@ -290,9 +344,9 @@ void playerJoinsGame(int sock_conn, MYSQL *conn, int code, char *firstVar, char 
 						sprintf(insert_query, "INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (%d, %d)", atoi(playerId), tableId);
 						if (mysql_query(conn, insert_query) != 0) {
 							printf("20/Error inserting into PlayerGameRelation: %u %s\n", mysql_errno(conn), mysql_error(conn));
-							sprintf(response, "20/%d/Error adding player %s to table %s", numForm, firstVar, thirdVar);
+							sprintf(response, "20/Error adding player %s to table %s",firstVar, thirdVar);
 						} else {
-							sprintf(response, "20/%d/Player %s successfully added to table %s", numForm, firstVar, thirdVar);
+							sprintf(response, "20/Player %s successfully added to table %s", firstVar, thirdVar);
 						}
 					}
 				}
@@ -305,19 +359,19 @@ void playerJoinsGame(int sock_conn, MYSQL *conn, int code, char *firstVar, char 
 	}
 }
 
-void playerCreatesGame(int sock_conn, MYSQL *conn, int code, char *firstVar, char *secondVar, char *thirdVar, char *response, int numForm) {
+void playerCreatesGame(int sock_conn, MYSQL *conn, int code, char *firstVar, char *secondVar, char *thirdVar, char *response) {
 	// Esta funcion gestiona la creacion de partidas. Gestiona los CREATE !!!!!!
 	char query[512];
 	sprintf(query, "SELECT playerID FROM Player WHERE username = '%s' AND password = '%s'", firstVar, secondVar);
 	int err = mysql_query(conn, query);
 	if (err != 0) {
 		printf("Error querying the database: %u %s\n", mysql_errno(conn), mysql_error(conn));
-		sprintf(response, "25/%d/Error retrieving player ID for user %s", numForm, firstVar);
+		sprintf(response, "25/Error retrieving player ID for user %s", firstVar);
 	} else {
 		MYSQL_RES *result = mysql_store_result(conn);
 		if (result == NULL) {
 			printf("Error storing result: %u %s\n", mysql_errno(conn), mysql_error(conn));
-			sprintf(response, "25/%d/Error retrieving result for user %s", numForm);
+			sprintf(response, "25/Error retrieving result for user %s");
 		} else {
 			MYSQL_ROW row = mysql_fetch_row(result);
 			if (row) {
@@ -327,19 +381,19 @@ void playerCreatesGame(int sock_conn, MYSQL *conn, int code, char *firstVar, cha
 				sprintf(insert_query, "INSERT INTO UnoTable (tableName, playerCount) VALUES ('%s', %d)", thirdVar, 1);
 				if (mysql_query(conn, insert_query) != 0) {
 					printf("25/Error inserting into UnoTable: %u %s\n", mysql_errno(conn), mysql_error(conn));
-					sprintf(response, "25/%d/Error creating table %s", numForm, thirdVar);
+					sprintf(response, "25/Error creating table %s", thirdVar);
 				} else {
 					// Get the tableId of the newly created game
 					sprintf(query, "SELECT tableId FROM UnoTable WHERE tableName = '%s'", thirdVar);
 					err = mysql_query(conn, query);
 					if (err != 0) {
 						printf("Error querying the database: %u %s\n", mysql_errno(conn), mysql_error(conn));
-						sprintf(response, "25/%d/Error retrieving table ID for game %s", numForm, thirdVar);
+						sprintf(response, "25/Error retrieving table ID for game %s",thirdVar);
 					} else {
 						MYSQL_RES *table_result = mysql_store_result(conn);
 						if (table_result == NULL) {
 							printf("Error storing result: %u %s\n", mysql_errno(conn), mysql_error(conn));
-							sprintf(response, "25/%d/Error retrieving result for game %s", numForm);
+							sprintf(response, "25/Error retrieving result for game %s");
 						} else {
 							MYSQL_ROW table_row = mysql_fetch_row(table_result);
 							if (table_row) {
@@ -348,9 +402,9 @@ void playerCreatesGame(int sock_conn, MYSQL *conn, int code, char *firstVar, cha
 								sprintf(insert_query, "INSERT INTO PlayerGameRelation (playerId, tableId) VALUES (%d, %d)", atoi(playerId), tableId);
 								if (mysql_query(conn, insert_query) != 0) {
 									printf("25/Error inserting into PlayerGameRelation: %u %s\n", mysql_errno(conn), mysql_error(conn));
-									sprintf(response, "25/%d/Error adding player %s to table %s", numForm, firstVar, thirdVar);
+									sprintf(response, "25/Error adding player %s to table %s", firstVar, thirdVar);
 								} else {
-									sprintf(response, "25/%d/Table %s successfully created and player %s added", numForm, thirdVar, firstVar);
+									sprintf(response, "25/Table %s successfully created and player %s added", thirdVar, firstVar);
 								}
 							}
 							mysql_free_result(table_result);
@@ -412,7 +466,6 @@ void *AtenderCliente(void *socket) {
 		// Procesar la solicitud
 		char *p = strtok(request, "/");
 		int code = atoi(p);
-		int numForm;
 		printf("Codigo procesado: %d\n", code);
 		
 		char firstVar[255] = {0};
@@ -420,9 +473,6 @@ void *AtenderCliente(void *socket) {
 		char thirdVar[255] = {0};
 		
 		// Parsear los parametros de la solicitud
-		p = strtok(NULL, "/");
-		numForm = atoi(p);
-
 		p = strtok(NULL, "/");
 		if (p != NULL) {
 			strncpy(firstVar, p, sizeof(firstVar) - 1);
@@ -453,7 +503,7 @@ void *AtenderCliente(void *socket) {
 		if (code == 0) {
 			printf("Valor de firstVar antes de handleDisconnect: '%s'\n", firstVar);
 			if (strlen(firstVar) > 0) {
-				handleDisconnect(sock_conn, firstVar, numForm);
+				handleDisconnect(sock_conn, firstVar);
 			} else {
 				printf("Error: Nombre del jugador no proporcionado al desconectar.\n");
 			}
@@ -461,19 +511,21 @@ void *AtenderCliente(void *socket) {
 			
 			
 		} else if (code == 1) {
-			handleRegister(sock_conn, conn, firstVar, secondVar, response, numForm);
+			handleRegister(sock_conn, conn, firstVar, secondVar, response);
 		} else if (code == 2) {
-			handleLogin(sock_conn, conn, firstVar, secondVar, response, numForm);
+			handleLogin(sock_conn, conn, firstVar, secondVar, response);
 		} else if (code == 6) {
-			handleCardColor("Red", numForm);
+			handleCardColor("Red");
 		} else if (code == 7) {
-			handleCardColor("Blue", numForm);
+			handleCardColor("Blue");
 		} else if (code == 8) {
-			handleCardColor("Yellow", numForm);
+			handleCardColor("Yellow");
 		} else if (code == 9) {
-			handleCardColor("Green", numForm);
+			handleCardColor("Green");
 		} else if (code == 20) {
-			playerJoinsGame(sock_conn, conn, code, firstVar, secondVar, thirdVar, response, numForm);
+			playerJoinsGame(sock_conn, conn, code, firstVar, secondVar, thirdVar, response);
+		} else if (code == 25) {
+			playerCreatesGame(sock_conn, conn, code, firstVar, secondVar, thirdVar, response);
 		} else if (code == 21) {
 			strcpy(Card1, "9,rojo");
 			sprintf(response, "21/%s", Card1);
@@ -486,8 +538,7 @@ void *AtenderCliente(void *socket) {
 			printf("Response enviada al cliente: %s\n", response);
 			write(sock_conn, response, strlen(response)); // Envía la respuesta al cliente
 			printf("Codigo enviado al cliente: 22\n"); // Depuración adicional
-		} else if (code == 25) {
-			playerCreatesGame(sock_conn, conn, code, firstVar, secondVar, thirdVar, response, numForm);
+
 		} else if (code == 97)	//INVITATION
 		{
 			int len = strlen(firstVar);
@@ -560,6 +611,40 @@ void *AtenderCliente(void *socket) {
 			pthread_mutex_unlock(&mutex);
 		}
 		
+		if (code == 24) {
+			char user[20] = {0};
+			char messag[200] = {0};
+			
+			
+			strncpy(user, firstVar, sizeof(user) - 1);
+			user[sizeof(user) - 1] = '\0'; 
+			strncpy(messag, secondVar, sizeof(messag) - 1);
+			messag[sizeof(messag) - 1] = '\0'; 
+			
+			
+			sprintf(messagechat, "%s/%s", user, messag);
+			
+			
+			printf("Messagechat: %s\n", messagechat);
+			
+			
+			pthread_mutex_lock(&mutex);
+			char notificacion[255];
+			sprintf(notificacion, "24/%s", messagechat);
+			printf("Notificacion: %s\n", notificacion);
+			
+			for (int j = 0; j < i; j++) {
+				if (sockets[j] != 0)  {
+					write(sockets[j], notificacion, strlen(notificacion));
+				}
+			}
+			sleep(0.5);
+			pthread_mutex_unlock(&mutex);
+		}
+		
+		
+		
+		
 		if (code != 0 && code != 23)  {
 			strncat(response, "\n", sizeof(response) - strlen(response) - 1);
 			write(sock_conn, response, strlen(response));
@@ -569,7 +654,7 @@ void *AtenderCliente(void *socket) {
 		if ((code == 6) || (code == 7) || (code == 8) || (code == 9)) {
 			pthread_mutex_lock(&mutex);
 			char notificacion[255];
-			sprintf(notificacion, "16/%d/%s", numForm, Card1);
+			sprintf(notificacion, "16/%s", Card1);
 			
 			printf(notificacion);
 			pthread_mutex_unlock(&mutex);
@@ -584,9 +669,9 @@ void *AtenderCliente(void *socket) {
 			pthread_mutex_lock(&mutex);
 			char notificacion1[255];
 			if (strlen(accumulatedPlayers) == 0) {
-				sprintf(notificacion1, "15/%d/none",numForm);
+				strcpy(notificacion1, "15/none");
 			} else {
-				sprintf(notificacion1, "15/%d/%s", numForm, accumulatedPlayers);
+				sprintf(notificacion1, "15/%s", accumulatedPlayers);
 			}
 			for (int j = 0; j < playerCount; j++) {
 				if (sockets[j] != NULL) {
@@ -607,13 +692,13 @@ void *AtenderCliente(void *socket) {
 
 
 
-//////////////////////////////////////////////PROGRAMA PRINCIPAL//////////////////////////////////////////////
+//////////////////////////////////////////////PROGRAMA PRINCIPAL////////////////////////////////////////////// 
 
 
 
 int main(int argc, char *argv[]) {
 	int sock_conn, sock_listen;
-	int puerto =9025;
+	int puerto =9125;
 	// SERVIDOR: puerto shiva 50061			 puerto vbox 9050
 	struct sockaddr_in serv_adr;
 	

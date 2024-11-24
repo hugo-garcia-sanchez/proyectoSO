@@ -20,6 +20,7 @@
             base.Dispose(disposing);
         }
 
+
         #region Código generado por el Diseñador de Windows Forms
 
         /// <summary>
@@ -43,12 +44,17 @@
             this.NotiYellow = new System.Windows.Forms.Button();
             this.cardlbl = new System.Windows.Forms.Label();
             this.howitworks = new System.Windows.Forms.Button();
+            this.Unir4 = new System.Windows.Forms.Button();
+            this.Unir3 = new System.Windows.Forms.Button();
+            this.Unir2 = new System.Windows.Forms.Button();
+            this.Unir1 = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.panelBarraTitulo = new System.Windows.Forms.Panel();
             this.maximizeBtn = new System.Windows.Forms.Button();
             this.minimizeBtn = new System.Windows.Forms.Button();
             this.lblTitle = new System.Windows.Forms.Label();
             this.button18 = new System.Windows.Forms.Button();
+            this.GameJoin = new System.Windows.Forms.GroupBox();
             this.indicadorConexion_label = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -72,7 +78,12 @@
             this.card2 = new System.Windows.Forms.Button();
             this.card3 = new System.Windows.Forms.Button();
             this.card4 = new System.Windows.Forms.Button();
+            this.labelCHAT = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.lblsend = new System.Windows.Forms.TextBox();
+            this.sendbuttom = new System.Windows.Forms.Button();
             this.panelBarraTitulo.SuspendLayout();
+            this.GameJoin.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.onlineGrid)).BeginInit();
@@ -254,6 +265,63 @@
             this.howitworks.UseVisualStyleBackColor = false;
             this.howitworks.Click += new System.EventHandler(this.howitworks_Click);
             // 
+            // Unir4
+            // 
+            this.Unir4.BackColor = System.Drawing.Color.Black;
+            this.Unir4.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.Unir4.Font = new System.Drawing.Font("Segoe UI Emoji", 8F, System.Drawing.FontStyle.Bold);
+            this.Unir4.ForeColor = System.Drawing.Color.White;
+            this.Unir4.Location = new System.Drawing.Point(71, 48);
+            this.Unir4.Name = "Unir4";
+            this.Unir4.Size = new System.Drawing.Size(60, 20);
+            this.Unir4.TabIndex = 35;
+            this.Unir4.Text = "4";
+            this.Unir4.UseVisualStyleBackColor = false;
+            this.Unir4.Click += new System.EventHandler(this.Unir1_Click);
+            // 
+            // Unir3
+            // 
+            this.Unir3.BackColor = System.Drawing.Color.Black;
+            this.Unir3.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.Unir3.Font = new System.Drawing.Font("Segoe UI Emoji", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Unir3.ForeColor = System.Drawing.Color.White;
+            this.Unir3.Location = new System.Drawing.Point(71, 24);
+            this.Unir3.Name = "Unir3";
+            this.Unir3.Size = new System.Drawing.Size(60, 20);
+            this.Unir3.TabIndex = 40;
+            this.Unir3.Text = "3";
+            this.Unir3.UseVisualStyleBackColor = false;
+            this.Unir3.Click += new System.EventHandler(this.Unir2_Click);
+            // 
+            // Unir2
+            // 
+            this.Unir2.BackColor = System.Drawing.Color.Black;
+            this.Unir2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.Unir2.Font = new System.Drawing.Font("Segoe UI Emoji", 8F, System.Drawing.FontStyle.Bold);
+            this.Unir2.ForeColor = System.Drawing.Color.White;
+            this.Unir2.Location = new System.Drawing.Point(6, 48);
+            this.Unir2.Name = "Unir2";
+            this.Unir2.Size = new System.Drawing.Size(60, 20);
+            this.Unir2.TabIndex = 41;
+            this.Unir2.Text = "2";
+            this.Unir2.UseVisualStyleBackColor = false;
+            this.Unir2.Click += new System.EventHandler(this.Unir3_Click);
+            // 
+            // Unir1
+            // 
+            this.Unir1.BackColor = System.Drawing.Color.Black;
+            this.Unir1.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.Unir1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.Unir1.Font = new System.Drawing.Font("Segoe UI Emoji", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Unir1.ForeColor = System.Drawing.Color.White;
+            this.Unir1.Location = new System.Drawing.Point(6, 24);
+            this.Unir1.Name = "Unir1";
+            this.Unir1.Size = new System.Drawing.Size(60, 20);
+            this.Unir1.TabIndex = 42;
+            this.Unir1.Text = "1";
+            this.Unir1.UseVisualStyleBackColor = false;
+            this.Unir1.Click += new System.EventHandler(this.Unir4_Click);
+            // 
             // btnClose
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -265,7 +333,7 @@
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnClose.ForeColor = System.Drawing.Color.White;
-            this.btnClose.Location = new System.Drawing.Point(1076, 3);
+            this.btnClose.Location = new System.Drawing.Point(1100, 3);
             this.btnClose.Margin = new System.Windows.Forms.Padding(0);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(28, 28);
@@ -286,7 +354,7 @@
             this.panelBarraTitulo.Location = new System.Drawing.Point(0, 0);
             this.panelBarraTitulo.Margin = new System.Windows.Forms.Padding(2);
             this.panelBarraTitulo.Name = "panelBarraTitulo";
-            this.panelBarraTitulo.Size = new System.Drawing.Size(1109, 37);
+            this.panelBarraTitulo.Size = new System.Drawing.Size(1133, 37);
             this.panelBarraTitulo.TabIndex = 45;
             this.panelBarraTitulo.Paint += new System.Windows.Forms.PaintEventHandler(this.panelBarraTitulo_Paint);
             this.panelBarraTitulo.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelBarraTitulo_MouseDown);
@@ -303,7 +371,7 @@
             this.maximizeBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.maximizeBtn.ForeColor = System.Drawing.Color.White;
             this.maximizeBtn.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.maximizeBtn.Location = new System.Drawing.Point(1043, 3);
+            this.maximizeBtn.Location = new System.Drawing.Point(1067, 3);
             this.maximizeBtn.Margin = new System.Windows.Forms.Padding(0);
             this.maximizeBtn.Name = "maximizeBtn";
             this.maximizeBtn.Size = new System.Drawing.Size(28, 28);
@@ -324,7 +392,7 @@
             this.minimizeBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.minimizeBtn.ForeColor = System.Drawing.Color.White;
             this.minimizeBtn.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.minimizeBtn.Location = new System.Drawing.Point(1005, 3);
+            this.minimizeBtn.Location = new System.Drawing.Point(1029, 3);
             this.minimizeBtn.Margin = new System.Windows.Forms.Padding(0);
             this.minimizeBtn.Name = "minimizeBtn";
             this.minimizeBtn.Size = new System.Drawing.Size(28, 28);
@@ -356,13 +424,29 @@
             this.button18.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button18.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(198)))), ((int)(((byte)(222)))), ((int)(((byte)(65)))));
-            this.button18.Location = new System.Drawing.Point(1078, 5);
+            this.button18.Location = new System.Drawing.Point(1102, 5);
             this.button18.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button18.Name = "button18";
             this.button18.Size = new System.Drawing.Size(26, 28);
             this.button18.TabIndex = 5;
             this.button18.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.button18.UseVisualStyleBackColor = true;
+            // 
+            // GameJoin
+            // 
+            this.GameJoin.BackColor = System.Drawing.Color.SlateGray;
+            this.GameJoin.Controls.Add(this.Unir3);
+            this.GameJoin.Controls.Add(this.Unir2);
+            this.GameJoin.Controls.Add(this.Unir1);
+            this.GameJoin.Controls.Add(this.Unir4);
+            this.GameJoin.Font = new System.Drawing.Font("Segoe UI Emoji", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.GameJoin.ForeColor = System.Drawing.Color.White;
+            this.GameJoin.Location = new System.Drawing.Point(298, 62);
+            this.GameJoin.Name = "GameJoin";
+            this.GameJoin.Size = new System.Drawing.Size(137, 70);
+            this.GameJoin.TabIndex = 46;
+            this.GameJoin.TabStop = false;
+            this.GameJoin.Text = "Join a game!";
             // 
             // indicadorConexion_label
             // 
@@ -486,7 +570,6 @@
             this.lblPlayersOnline.Size = new System.Drawing.Size(128, 21);
             this.lblPlayersOnline.TabIndex = 20;
             this.lblPlayersOnline.Text = "Players Online:";
-            this.lblPlayersOnline.Click += new System.EventHandler(this.lblPlayersOnline_Click);
             // 
             // lblAvailableGames
             // 
@@ -519,7 +602,6 @@
             this.buttoncarta2.TabIndex = 55;
             this.buttoncarta2.Text = "UNO";
             this.buttoncarta2.UseVisualStyleBackColor = false;
-            this.buttoncarta2.Click += new System.EventHandler(this.buttoncarta2_Click);
             // 
             // buttoncarta1
             // 
@@ -553,7 +635,6 @@
             this.buttoncarta4.TabIndex = 58;
             this.buttoncarta4.Text = "UNO";
             this.buttoncarta4.UseVisualStyleBackColor = false;
-            this.buttoncarta4.Click += new System.EventHandler(this.buttoncarta4_Click);
             // 
             // buttoncartamedio
             // 
@@ -565,7 +646,6 @@
             this.buttoncartamedio.TabIndex = 59;
             this.buttoncartamedio.Text = "UNO";
             this.buttoncartamedio.UseVisualStyleBackColor = false;
-            this.buttoncartamedio.Click += new System.EventHandler(this.buttoncartamedio_Click);
             // 
             // fourcards
             // 
@@ -579,6 +659,7 @@
             this.fourcards.TabIndex = 60;
             this.fourcards.Text = "4 cards";
             this.fourcards.UseVisualStyleBackColor = false;
+            this.fourcards.Click += new System.EventHandler(this.fourcards_Click);
             // 
             // middlecard
             // 
@@ -592,6 +673,7 @@
             this.middlecard.TabIndex = 61;
             this.middlecard.Text = "Middle Card";
             this.middlecard.UseVisualStyleBackColor = false;
+            this.middlecard.Click += new System.EventHandler(this.middlecard_Click);
             // 
             // card1
             // 
@@ -633,7 +715,7 @@
             this.card3.TabIndex = 64;
             this.card3.Text = "card 3";
             this.card3.UseVisualStyleBackColor = false;
-            //this.card3.Click += new System.EventHandler(this.card3_Click);
+            this.card3.Click += new System.EventHandler(this.card3_Click);
             // 
             // card4
             // 
@@ -647,6 +729,54 @@
             this.card4.TabIndex = 65;
             this.card4.Text = "card 4";
             this.card4.UseVisualStyleBackColor = false;
+            this.card4.Click += new System.EventHandler(this.card4_Click);
+            // 
+            // labelCHAT
+            // 
+            this.labelCHAT.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelCHAT.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelCHAT.Location = new System.Drawing.Point(553, 513);
+            this.labelCHAT.Name = "labelCHAT";
+            this.labelCHAT.Size = new System.Drawing.Size(285, 117);
+            this.labelCHAT.TabIndex = 66;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Transparent;
+            this.label4.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.White;
+            this.label4.Location = new System.Drawing.Point(665, 489);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(53, 21);
+            this.label4.TabIndex = 67;
+            this.label4.Text = "CHAT";
+            // 
+            // lblsend
+            // 
+            this.lblsend.BackColor = System.Drawing.Color.Black;
+            this.lblsend.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lblsend.Font = new System.Drawing.Font("Segoe UI Emoji", 9F);
+            this.lblsend.ForeColor = System.Drawing.Color.White;
+            this.lblsend.Location = new System.Drawing.Point(553, 651);
+            this.lblsend.Name = "lblsend";
+            this.lblsend.Size = new System.Drawing.Size(231, 16);
+            this.lblsend.TabIndex = 68;
+            // 
+            // sendbuttom
+            // 
+            this.sendbuttom.AutoSize = true;
+            this.sendbuttom.BackColor = System.Drawing.Color.Black;
+            this.sendbuttom.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.sendbuttom.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold);
+            this.sendbuttom.ForeColor = System.Drawing.Color.White;
+            this.sendbuttom.Location = new System.Drawing.Point(804, 639);
+            this.sendbuttom.Name = "sendbuttom";
+            this.sendbuttom.Size = new System.Drawing.Size(64, 34);
+            this.sendbuttom.TabIndex = 69;
+            this.sendbuttom.Text = "SEND";
+            this.sendbuttom.UseVisualStyleBackColor = false;
+            this.sendbuttom.Click += new System.EventHandler(this.sendbuttom_Click);
             // 
             // Form1
             // 
@@ -655,7 +785,11 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
             this.BackgroundImage = global::WindowsFormsApplication1.Properties.Resources.fondo_oscuro;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(1109, 640);
+            this.ClientSize = new System.Drawing.Size(1133, 682);
+            this.Controls.Add(this.sendbuttom);
+            this.Controls.Add(this.lblsend);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.labelCHAT);
             this.Controls.Add(this.card4);
             this.Controls.Add(this.card3);
             this.Controls.Add(this.card2);
@@ -674,6 +808,7 @@
             this.Controls.Add(this.onlineGrid);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.GameJoin);
             this.Controls.Add(this.panelBarraTitulo);
             this.Controls.Add(this.howitworks);
             this.Controls.Add(this.cardlbl);
@@ -686,10 +821,10 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panelBarraTitulo.ResumeLayout(false);
             this.panelBarraTitulo.PerformLayout();
+            this.GameJoin.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -718,11 +853,16 @@
         private System.Windows.Forms.Button NotiYellow;
         private System.Windows.Forms.Label cardlbl;
         private System.Windows.Forms.Button howitworks;
+        private System.Windows.Forms.Button Unir4;
+        private System.Windows.Forms.Button Unir3;
+        private System.Windows.Forms.Button Unir2;
+        private System.Windows.Forms.Button Unir1;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Panel panelBarraTitulo;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Button button18;
         private System.Windows.Forms.Button minimizeBtn;
+        private System.Windows.Forms.GroupBox GameJoin;
         private System.Windows.Forms.Button maximizeBtn;
         private System.Windows.Forms.Label indicadorConexion_label;
         private System.Windows.Forms.Panel panel1;
@@ -747,6 +887,10 @@
         private System.Windows.Forms.Button card2;
         private System.Windows.Forms.Button card3;
         private System.Windows.Forms.Button card4;
+        private System.Windows.Forms.Label labelCHAT;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox lblsend;
+        private System.Windows.Forms.Button sendbuttom;
     }
 }
 
