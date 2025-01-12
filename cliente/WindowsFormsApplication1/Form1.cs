@@ -356,9 +356,9 @@ namespace ClientApplication
                                     response = trozos[2].Split('\0')[0];
                                     this.Invoke(new Action(() => MostrarMensaje(response)));
 
-                                    SafeInvoke(username, () => username.Text = "");
+                                    //SafeInvoke(username, () => username.Text = "");
 
-                                    SafeInvoke(password, () => password.Text = "");
+                                    //SafeInvoke(password, () => password.Text = "");
 
                                     esperandoRespuesta = false;
                                     break;
@@ -376,15 +376,15 @@ namespace ClientApplication
                                                 lblTitle.Text = "Welcome to UNO Game Main Menu! You have logged in as " + selectedUser;
                                                 
                                             });
-                                            SafeInvoke(username, () => username.Text = "");
-                                            SafeInvoke(password, () => password.Text = "");
+                                            //SafeInvoke(username, () => username.Text = "");
+                                            //SafeInvoke(password, () => password.Text = "");
                                             SafeInvoke(lblUserNameLittle, () => lblUserNameLittle.Text = selectedUser);
                                             SafeInvoke(panelUsuario, () => panelUsuario.Show());
                                         }
                                         else
                                         {
                                             this.Invoke(new Action(() => MostrarMensaje(response)));
-                                            SafeInvoke(password, () => password.Text = "");
+                                            //SafeInvoke(password, () => password.Text = "");
                                         }
                                     }
                                     break;
@@ -573,12 +573,47 @@ namespace ClientApplication
                                     this.Invoke(new Action(() => Invitation1(mensajeCompleto)));
                                     break;
 
-                                case 97: // INVITATION RECEIVED
-                                    trozos = response.Split('/');
-                                    nForm = Convert.ToInt32(trozos[0]);
-                                    response = trozos[1];
-                                    this.Invoke(new Action(() => ProcesarCodigo97(response)));
-                                    break;
+                                case 97: // INVITATION RESPONSE (RECIBIDA)
+                                    {
+                                        try
+                                        {
+                                            // Dividir el mensaje completo en partes
+                                            string[] trozos97 = mensajeCompleto.Split('/');
+
+                                            // Verificar que el mensaje tiene al menos los elementos necesarios
+                                            if (trozos97.Length >= 5)
+                                            {
+                                                // Extraer las partes del mensaje
+                                                string decision = trozos97[2];  // Decisión tomada (0: rechazado, 1: aceptado o "correcto")
+                                                string partida = trozos97[3];   // Nombre de la partida
+                                                string invitado = trozos97[4].Trim(); // Última parte es el invitado (sin comas)
+
+                                                // Verificar si el usuario actual es el invitado
+                                                if (selectedUser.Trim() == invitado)
+                                                {
+                                                    MessageBox.Show($"You have joined the game '{partida}'.");
+
+                                                    // Abrir el formulario de la partida
+                                                    this.Invoke(new Action(() => inicializarform2(partida)));
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine($"Notification 97 ignored for user '{selectedUser}' as it is for another user.");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("Invalid format for notification 97. Insufficient parts.");
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Console.WriteLine($"Exception while processing code 97: {ex.Message}");
+                                        }
+                                        break;
+                                    }
+
+
 
                                 case 98: // INVITATION RECEIVED
                                     trozos = response.Split('/');
@@ -1115,7 +1150,7 @@ namespace ClientApplication
         private void Connection_Click(object sender, EventArgs e)
         {
             IPAddress direc = IPAddress.Parse("10.4.119.5");
-            IPEndPoint ipep = new IPEndPoint(direc, 50061);
+            IPEndPoint ipep = new IPEndPoint(direc, 50062);
             // CLIENTE IP: SHIVA =  10.4.119.5                VBOX = 192.168.56.102
             // CLIENTE PUERTO: SHIVA =  50061                 VBOX = 9050
 
