@@ -418,11 +418,11 @@ void handleRecentGames(int sock_conn, MYSQL *conn, int numForm, char *hours, cha
 void GenerarMensajeAleatorio(char* mensaje, char* cantidad)
 {
 	// Inicializar el generador de números aleatorios solo una vez
-    static int initialized = 0;
-    if (!initialized) {
-        srand(time(NULL));
-        initialized = 1;
-    }
+	static int initialized = 0;
+	if (!initialized) {
+		srand(time(NULL));
+		initialized = 1;
+	}
 	// Convertir el parametro cantidad a entero
 	int numCartas = atoi(cantidad);
 	
@@ -1191,28 +1191,28 @@ void *AtenderCliente(void *socket) {
 			
 		} else if (code == 37) {		//carta central, boton de inicializar
 			char frase[255] = "";
-            GenerarMensajeAleatorio(accumulatedCards,firstVar); 
-            sprintf(frase, "37/%d/%s/%s/%s", numForm, accumulatedCards,secondVar,thirdVar); // second var es el jugador, third la partida
-            printf("frase: %s\n", frase);
-            pthread_mutex_lock(&mutex);
-            int numSockets;
-            int *socketsInGame = HandleSocketsGame(conn, thirdVar, &numSockets);
-            printf("llega antes del socket\n");
-            if (socketsInGame != NULL) {
-                // Enviar la notificacion a todos los jugadores de la partida
+			GenerarMensajeAleatorio(accumulatedCards,firstVar); 
+			sprintf(frase, "37/%d/%s/%s/%s", numForm, accumulatedCards,secondVar,thirdVar); // second var es el jugador, third la partida
+			printf("frase: %s\n", frase);
+			pthread_mutex_lock(&mutex);
+			int numSockets;
+			int *socketsInGame = HandleSocketsGame(conn, thirdVar, &numSockets);
+			printf("llega antes del socket\n");
+			if (socketsInGame != NULL) {
+				// Enviar la notificacion a todos los jugadores de la partida
 				for (int j = 0; j < numSockets; j++) {
 					printf("entra al bucle\n");
 					if (socketsInGame[j] != 0) {
 						char response[400] = "";
 						char localAccumulatedCards[100] = ""; 
 						char cantidad[2] = "5"; // necesario por como esta construido el metodo
-
+						
 						// Generar cartas distintas para cada iteración
 						GenerarMensajeAleatorio(localAccumulatedCards, cantidad);
-
+						
 						sprintf(response, "%s/%s", frase, localAccumulatedCards);
 						printf("Response a enviar: %s\n", response);
-
+						
 						int bytes_written = write(socketsInGame[j], response, strlen(response));
 						if (bytes_written < 0) {
 							perror("Error escribiendo en el socket");
@@ -1221,10 +1221,10 @@ void *AtenderCliente(void *socket) {
 						}
 					}
 				}
-            } else {
-                printf("No se encontraron jugadores en la partida %s.\n", thirdVar);
-            }
-            pthread_mutex_unlock(&mutex);
+			} else {
+				printf("No se encontraron jugadores en la partida %s.\n", thirdVar);
+			}
+			pthread_mutex_unlock(&mutex);
 		}else if (code == 29) { // carta central, alguien ha realizado jugada
 			
 			int numero;
@@ -1393,9 +1393,9 @@ void *AtenderCliente(void *socket) {
 				} else {
 					p = inviteFun(conn, secondVar, thirdVar); // Validar la partida e invitar
 					if (p != -1) {
-						sprintf(response1, "97/%d/0/correcto/%s,", numForm, secondVar);
+						sprintf(response1, "97/%d/0/%s/%s", numForm, thirdVar, secondVar);
 					} else {
-						sprintf(response1, "97/%d/0/error_anadiendo/%s,", numForm, secondVar);
+						sprintf(response1, "97/%d/0/error_anadiendo/%s", numForm, secondVar);
 					}
 				}
 				printf("INVITING: %s\n", secondVar);
