@@ -11,6 +11,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Web;
+using System.IO;
+using WindowsFormsApplication1;
 
 namespace ClientApplication
 {
@@ -24,16 +26,19 @@ namespace ClientApplication
         private bool esperandoRespuesta = false; //utilizaremos esta variable una vez enviamos desde el cliente al serv un mensage
         private bool isConnected = false;
         private bool maximizado = false;
-        private string selectedUser;    // uso este string para evitar que se loguee un mismo usuario varias veces
+        private string selectedUser = "";    // uso este string para evitar que se loguee un mismo usuario varias veces
         private bool alreadyLogged = false; // con este bool nos aseguramos que no hagas log in repetidamente sin desconectarte antes
-        
+        private string isCreator = "admin";
         List<string> Invitations = new List<string>();
+
+        List<PartidaForm> formularios = new List<PartidaForm>();
+        int mainform = 999;
         public Form1()
         {
             InitializeComponent();
             this.SetStyle(ControlStyles.ResizeRedraw, true);
             this.DoubleBuffered = true;
-            CheckForIllegalCrossThreadCalls = false;
+            //CheckForIllegalCrossThreadCalls = false;
 
             // Asocia el evento DataError para manejar errores en el DataGridView
             onlineGrid.DataError += onlineGrid_DataError;
@@ -50,20 +55,70 @@ namespace ClientApplication
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            onlineGrid.AllowUserToAddRows = false; // Desactiva la fila adicional para agregar nuevas filas
-            gamesGrid.AllowUserToAddRows = false; // Desactiva la fila adicional para agregar nuevas filas
+            panelUsuario.Hide();
+            // ONLINE GRID DISEÑO
 
+            // Cosas generales + datatable
+            onlineGrid.AllowUserToOrderColumns = false;
+            onlineGrid.AllowUserToAddRows = false; // Desactiva la fila adicional para agregar nuevas filas
             onlineGrid.ReadOnly = true; // Deshabilita la edición en todas las celdas
-            gamesGrid.ReadOnly = true; // Deshabilita la edición en todas las celdas
 
             dt.Columns.Add("PlayerName"); // Inicializa la datatable de usuarios
             onlineGrid.DataSource = dt;
+            onlineGrid.RowHeadersVisible = false;
+
+            onlineGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill; // no desbordan las casillas
+
+            // Fondo general 
+            onlineGrid.BackgroundColor = Color.Black;
+
+            // Celdas
+            onlineGrid.DefaultCellStyle.BackColor = Color.DarkGray;
+            onlineGrid.DefaultCellStyle.ForeColor = Color.White;
+            onlineGrid.DefaultCellStyle.Font = new Font("Segoe UI Emoji", 10);
+            onlineGrid.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            // Al clicar
+            onlineGrid.DefaultCellStyle.SelectionBackColor = Color.Gray;
+            onlineGrid.DefaultCellStyle.SelectionForeColor = Color.White;
+
+            // Cabecera
+            onlineGrid.EnableHeadersVisualStyles = false;
+            onlineGrid.ColumnHeadersDefaultCellStyle.BackColor = Color.Black;
+            onlineGrid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            onlineGrid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Emoji", 10, FontStyle.Bold);
+            onlineGrid.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            // GAME GRID DISEÑO
+            gamesGrid.AllowUserToOrderColumns = false;
+
+            gamesGrid.AllowUserToAddRows = false; // Desactiva la fila adicional para agregar nuevas filas
+
+            gamesGrid.ReadOnly = true; // Deshabilita la edición en todas las celdas
+
 
             dtGames.Columns.Add("GameName"); // Inicializa la datatable de usuarios
             gamesGrid.DataSource = dtGames;
+            gamesGrid.RowHeadersVisible = false;
 
+            gamesGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-           
+            // Fondo general 
+            onlineGrid.BackgroundColor = Color.Black;
+            onlineGrid.BackgroundColor = Color.Black;
+
+            // Celdas
+            onlineGrid.DefaultCellStyle.BackColor = Color.DarkGray;
+            onlineGrid.DefaultCellStyle.ForeColor = Color.White;
+            onlineGrid.DefaultCellStyle.Font = new Font("Segoe UI Emoji", 10);
+            onlineGrid.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            // Cabecera
+            onlineGrid.EnableHeadersVisualStyles = false;
+            onlineGrid.ColumnHeadersDefaultCellStyle.BackColor = Color.Black;
+            onlineGrid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            onlineGrid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Emoji", 10, FontStyle.Bold);
+            onlineGrid.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
         }
         private void SafeInvoke(Control control, Action action)
         {
@@ -85,18 +140,64 @@ namespace ClientApplication
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            string mensaje = "0/" + username.Text;
-            byte[] msg = Encoding.ASCII.GetBytes(mensaje);
-            server.Send(msg);
+            try
+            {
+                // Cerrar todos los formularios secundarios.
+                foreach (Form formulario in formularios)
+                {
+                    try
+                    {
+                        if (formulario.InvokeRequired)
+                        {
+                            formulario.Invoke((MethodInvoker)delegate
+                            {
+                                formulario.Close();
+                            });
+                        }
+                        else
+                        {
+                            formulario.Close();
+                        }
 
-            indicadorConexion_label.ForeColor = Color.Red;
-            server.Shutdown(SocketShutdown.Both);
-            server.Close();
-            server = null;
-            atender.Abort();
-            isConnected = false;
+                        // Libera los recursos asociados.
+                        formulario.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error al cerrar el formulario: {ex.Message}");
+                    }
+                }
+
+                // Cerrar conexión del servidor si está conectada.
+                if (server != null && server.Connected)
+                {
+                    string mensaje = "0/" + mainform + "/" + selectedUser;
+                    byte[] msg = Encoding.ASCII.GetBytes(mensaje);
+                    server.Send(msg);
+                    indicadorConexion_label.ForeColor = Color.Red;
+
+                    server.Shutdown(SocketShutdown.Both);
+                    server.Close();
+                    server = null;
+                }
+
+                // Detener hilo de escucha si está activo.
+                isConnected = false;
+                if (atender != null && atender.IsAlive)
+                {
+                    atender.Abort();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en btnClose_Click: {ex.Message}");
+            }
+
+            // Cerrar el formulario principal.
             this.Close();
         }
+
+
 
         private void maximizeBtn_Click(object sender, EventArgs e)
         {
@@ -160,8 +261,11 @@ namespace ClientApplication
             esperandoRespuesta = false;
         }
 
-        /*
-        private void EnviarMensajeUnirPartida(int partida) //mediante este proceso enviaremos un mensaje de unir partida
+
+        private void EnviarMensajeUnirPartida(string partida)
+        // Este nuevo unir partida permite mas flexibilidad (las partidas pueden tener ahora cualquier nombre,
+        // no tiene pq ser un ID de partida.
+
         {
             if (!isConnected)
             {
@@ -169,25 +273,7 @@ namespace ClientApplication
                 return;
             }
 
-            string mensaje = $"{10 + partida}/{username.Text}/{password.Text}/{partida}";
-            byte[] msg = Encoding.ASCII.GetBytes(mensaje);
-            server.Send(msg);
-            esperandoRespuesta = true;
-        }
-        */
-        private void EnviarMensajeUnirPartida(string partida) 
-            // Este nuevo unir partida permite mas flexibilidad (las partidas pueden tener ahora cualquier nombre,
-            // no tiene pq ser un ID de partida.
-
-            // Tambien elimina la necesidad de enviar tu contraseña de juego (FUTURO)
-        {
-            if (!isConnected)
-            {
-                MessageBox.Show("You are not connected to the server.");
-                return;
-            }
-
-            string mensaje = $"{20}/{username.Text}/{password.Text}/{partida}";
+            string mensaje = $"{20}/{mainform}/{selectedUser}/{partida}";
             byte[] msg = Encoding.ASCII.GetBytes(mensaje);
             server.Send(msg);
             esperandoRespuesta = true;
@@ -202,25 +288,11 @@ namespace ClientApplication
                 return;
             }
 
-            string mensaje = $"{25}/{username.Text}/{password.Text}/{partida}";
+            string mensaje = $"{25}/{mainform}/{selectedUser}/{partida}";
+            
             byte[] msg = Encoding.ASCII.GetBytes(mensaje);
             server.Send(msg);
             esperandoRespuesta = true;
-        }
-
-        public void InvitationSent(string invitedList)
-        {
-            MessageBox.Show("Invitaion to " + invitedList + " received correctly", "Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
-           
-        }
-        //REBEM UNA INVITACIO 
-        public void InvitationReceived(List<string> invitations)
-        {
-            this.Invitations = invitations;
-
-
-
-
         }
 
         //------------------------- LECTURA DE LOS MENSAGES ENVIADOS POR EL SERV -------------------------\\
@@ -236,174 +308,471 @@ namespace ClientApplication
                     // Limpia el buffer antes de recibir datos
                     byte[] msg2 = new byte[512];
                     Array.Clear(msg2, 0, msg2.Length);
-
-                    // Recibe los datos del servidor
-                    int bytesReceived = server.Receive(msg2);
-
-                    // Procesa los datos si hay algo recibido
-                    if (bytesReceived > 0)
+                    if (server != null && server.Connected)
                     {
-                        string mensajeCompleto = Encoding.ASCII.GetString(msg2, 0, bytesReceived).Trim();
-                        Console.WriteLine($"Mensaje completo recibido: {mensajeCompleto}");
+                        // Recibe los datos del servidor
+                        int bytesReceived = server.Receive(msg2);
 
-                        // Validar que el mensaje no esté vacío
-                        if (string.IsNullOrEmpty(mensajeCompleto))
+                        // Procesa los datos si hay algo recibido
+                        if (bytesReceived > 0)
                         {
-                            Console.WriteLine("El mensaje recibido está vacío. Descartando.");
-                            continue;
-                        }
+                            string mensajeCompleto = Encoding.ASCII.GetString(msg2, 0, bytesReceived).Trim();
+                            Console.WriteLine($"Mensaje completo recibido: {mensajeCompleto}");
 
-                        // Intentar dividir el mensaje en partes
-                        string[] trozos = mensajeCompleto.Split('/');
-                        if (trozos.Length < 1 || !int.TryParse(trozos[0], out int codigo))
-                        {
-                            Console.WriteLine("El mensaje recibido tiene un formato inválido. Descartando.");
-                            continue;
-                        }
-
-                        // Extraer la respuesta si existe
-                        string response = trozos.Length > 1 ? string.Join("/", trozos.Skip(1)) : string.Empty;
-
-                        
-                        Console.WriteLine($"Código recibido: {codigo}");
-                        Console.WriteLine($"Respuesta extraída: {response}");
-
-                        // Validación adicional de mensajes corruptos o inválidos
-                        if (codigo < 0 || codigo > 100)
-                        {
-                            Console.WriteLine("Mensaje descartado por tener un código fuera del rango permitido.");
-                            continue;
-                        }
-
-                        if (!esperandoRespuesta && codigosSinMessageBox.Contains(codigo))
-                        {
-                            if (codigo == 16)
+                            // Validar que el mensaje no esté vacío
+                            if (string.IsNullOrEmpty(mensajeCompleto))
                             {
-                                cardlbl.Text = response;
+                                Console.WriteLine("El mensaje recibido está vacío. Descartando.");
+                                continue;
                             }
-                            else if (codigo == 27)
-                            {
-                                if (trozos.Length > 1)
-                                {
-                                    string[] ListaCartas = response.Split(' ');
 
-                                    if (ListaCartas.Length == 2)
+                            // Intentar dividir el mensaje en partes
+                            string[] trozos = mensajeCompleto.Split('/');
+                            if (trozos.Length < 1 || !int.TryParse(trozos[0], out int codigo))
+                            {
+                                Console.WriteLine("El mensaje recibido tiene un formato inválido. Descartando.");
+                                continue;
+                            }
+
+                            // Extraer la respuesta si existe
+                            string response = trozos.Length > 1 ? string.Join("/", trozos.Skip(1)) : string.Empty;
+
+                            Console.WriteLine($"Código recibido: {codigo}");
+                            Console.WriteLine($"Respuesta extraída: {response}");
+
+                            // Validación adicional de mensajes corruptos o inválidos
+                            if (codigo < 0 || codigo > 100)
+                            {
+                                Console.WriteLine("Mensaje descartado por tener un código fuera del rango permitido.");
+                                continue;
+                            }
+                            int nForm;
+
+
+                            switch (codigo)
+                            {
+                                case 1:
+                                    nForm = Convert.ToInt32(trozos[1]);
+                                    response = trozos[2].Split('\0')[0];
+                                    this.Invoke(new Action(() => MostrarMensaje(response)));
+
+                                    SafeInvoke(username, () => username.Text = "");
+
+                                    SafeInvoke(password, () => password.Text = "");
+
+                                    esperandoRespuesta = false;
+                                    break;
+                                case 2:
+                                    nForm = Convert.ToInt32(trozos[1]);
+                                    response = trozos[2].Split('\0')[0];
+                                    if (esperandoRespuesta)
                                     {
-                                        buttoncartamedio.BackColor = ObtenerColorDeCarta(ListaCartas[1]);
-                                        buttoncartamedio.Text = ListaCartas[0];
-                                        cartaMedio = new Carta(ListaCartas[0], ListaCartas[1]);
+                                        esperandoRespuesta = false;
+                                        if (response.StartsWith("Player"))
+                                        {
+                                            alreadyLogged = true;
+                                            SafeInvoke(lblTitle, () =>
+                                            {
+                                                lblTitle.Text = "Welcome to UNO Game Main Menu! You have logged in as " + selectedUser;
+                                                
+                                            });
+                                            SafeInvoke(username, () => username.Text = "");
+                                            SafeInvoke(password, () => password.Text = "");
+                                            SafeInvoke(lblUserNameLittle, () => lblUserNameLittle.Text = selectedUser);
+                                            SafeInvoke(panelUsuario, () => panelUsuario.Show());
+                                        }
+                                        else
+                                        {
+                                            this.Invoke(new Action(() => MostrarMensaje(response)));
+                                            SafeInvoke(password, () => password.Text = "");
+                                        }
+                                    }
+                                    break;
+                                case 53:
+                                    // Extraer información del mensaje
+                                    if (trozos.Length >= 3)
+                                    {
+                                        nForm = Convert.ToInt32(trozos[1]); // Número de formulario
+                                        string ganador = trozos[2].Split('\0')[0]; // Extraer el nombre del ganador
+
+                                        // Actualizar el label13 en la interfaz de usuario
+                                        SafeInvoke(label13, () =>
+                                        {
+                                            label13.Text = ""; // Limpiar el contenido del label
+                                            label13.Text = $"Winner: {ganador}"; // Mostrar el nombre del ganador
+                                        });
+
+                                        Console.WriteLine($"Código 53 procesado. Winner: {ganador}");
                                     }
                                     else
                                     {
-                                        MessageBox.Show("El mensaje recibido no tiene el formato esperado para código 27.");
-                                    }
-                                }
-                                continue;
-                            }
-                        }
-
-                        switch (codigo)
-                        {
-                            case 1:
-                            case 2:
-                            case 11:
-                            case 12:
-                            case 13:
-                            case 14:
-                            case 20:
-                            case 25:
-                                if (esperandoRespuesta)
-                                {
-                                    MostrarMensaje(response);
-                                    esperandoRespuesta = false;
-                                }
-                                break;
-
-                            case 15:
-                                ProcesarListaJugadores(trozos);
-                                break;
-
-                            case 22: // Maneja 4 cartas
-                                ProcesarCartasJugador(response, 4);
-                                break;
-
-                            case 21: // Maneja 1 carta
-                                ProcesarCartasJugador(response, 1);
-                                break;
-                            case 97:  //INVITATION RECEIVED
-                                {
-                                    int type_operation = Convert.ToInt32(response);
-
-                                    
-                                   
-                                    if (type_operation == 0) // Recibimos respuesta a nuestra invitación a otro usuario
-                                    {
-                                        // msg del tipo "97/0/correcto/s,"
-
-                                        string tipo = trozos[2];
-
-                                        if (tipo == "correcto")
-                                        {
-                                            // Dividimos todos los nombres separados por comas
-                                            string invitedList = trozos[3];
-
-                                            // Llamamos a InvitationSent con la lista completa
-                                            InvitationSent(invitedList);
-                                        }
-                                        
-                                    
-                                    }
-                                    else if (type_operation == 1)   //rebem una invitacio d'un altre jugador
-                                    {
-                                        //msg del tipus "97/1/%s,"
-                                        string inviting = trozos[2];
-
-                                        //HEM DE FER ARRIBAR LA INVITACIÓ AL CLIENT:
-                                        //SI ESTA AL FORMS DEL CLIENT, -> MESSAGEBOX
-                                        //SI ESTA AL FORMS DEL GAME, -> L'ENVIEM A TOTS ELS FORMS GAME QUE TINGUI OBERT VIA FUNCIÓ
-
-                                        MessageBox.Show("Invitaion from " + inviting + " received. Added to your invitation log in game", "Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        
+                                        Console.WriteLine("El mensaje para el código 53 tiene un formato incorrecto.");
                                     }
                                     break;
-                                }
-                            case 24:
-                                {                                  
-                                    string username = trozos[1]; 
-                                    string message = trozos[2]; 
-                                 
-                                    string chatMessage = $"{username}: {message}";
 
-                                    SafeInvoke(labelCHAT, () => {
-                                        labelCHAT.Text += chatMessage + Environment.NewLine;
-                                    });
+                                case 20:
+                                    nForm = Convert.ToInt32(trozos[1]);
+                                    response = trozos[2].Split('\0')[0];
+                                    if (esperandoRespuesta)
+                                    {
+                                        if (response.StartsWith("Done"))
+                                        {
+                                            gameName = response.Split(' ')[1];
+                                            this.Invoke(new Action(() => inicializarform2(gameName)));
+                                        }
+                                        else
+                                        {
+                                            this.Invoke(new Action(() => MostrarMensaje(response)));
+                                        }
+                                        esperandoRespuesta = false;
+                                    }
+                                    break;
+                                case 25:
+                                    nForm = Convert.ToInt32(trozos[1]);
+                                    response = trozos[2].Split('\0')[0];
+                                    if (esperandoRespuesta)
+                                    {
+                                        if (response.StartsWith("Done"))
+                                        {
+                                            isCreator = selectedUser;
+                                            gameName = response.Split(' ')[1];
+                                            this.Invoke(new Action(() => inicializarform2(gameName)));
+                                        }
+                                        else
+                                        {
+                                            this.Invoke(new Action(() => MostrarMensaje(response)));
+                                        }
+                                        esperandoRespuesta = false;
+                                    }
+                                    break;
+
+                                case 15:
+                                    nForm = Convert.ToInt32(trozos[1]);
+                                    response = trozos[2].Split('\0')[0];
+                                    this.Invoke(new Action(() => ProcesarListaJugadores1(trozos)));
+                                    break;
+
+                                case 26:
+                                    nForm = Convert.ToInt32(trozos[1]);
+                                    response = trozos[2].Split('\0')[0];
+                                    this.Invoke(new Action(() => ProcesarLista2(trozos)));
+                                    break;
+
+                                case 22: // Maneja el mazo del jugador
+                                    trozos = response.Split('/');
+                                    nForm = Convert.ToInt32(trozos[0]);
+                                    response = trozos[1];
+                                    formularios[nForm].TomaMazoJugador(response);
+                                    //this.Invoke(new Action(() => ProcesarCartasJugador(response, 4)));
+                                    break;
+
+                                case 37: // Maneja la carta central
+                                    trozos = response.Split('/');
+                                    nForm = Convert.ToInt32(trozos[0]);
+                                    response = trozos[1];
+                                    string turno = trozos[2];
+                                    string mazo = trozos[4];
+                                    formularios[nForm].TomaCartaCentral(response);
+                                    formularios[nForm].TomaTurno(turno);
+                                    formularios[nForm].TomaMazoJugador(mazo);
+                                    //this.Invoke(new Action(() => ProcesarCartasJugador(response, 1)));
+                                    break;
+                                case 29:
+                                    trozos = response.Split('/');
+                                    nForm = Convert.ToInt32(trozos[0]);
+                                    response = trozos[1];
+                                    turno = trozos[2];
+                                    formularios[nForm].TomaCartaCentral(response);
+                                    formularios[nForm].TomaTurno(turno);
+                                    //this.Invoke(new Action(() => ProcesarCartasJugador(response, 1)));
+                                    break;
+                                case 31:
+                                    trozos = response.Split('/');
+                                    nForm = Convert.ToInt32(trozos[0]);
+                                    string turno_robar = trozos[1];
+                                    formularios[nForm].TomaTurno(turno_robar);
+                                    break;
+                                case 73:
+                                    Console.WriteLine("Procesando mensaje para código 73:");
+                                    Console.WriteLine("Mensaje completo recibido: " + response);
+
+                                    // Validar que el mensaje tiene el formato esperado
+                                    if (!response.Contains("/numjug/"))
+                                    {
+                                        Console.WriteLine("El mensaje no contiene '/numjug/' necesario para procesar.");
+                                        break;
+                                    }
+
+                                    // Verificar si el mensaje contiene el prefijo 999 y eliminarlo
+                                    if (response.StartsWith("999/") || response.StartsWith("9991/"))
+                                    {
+                                        Console.WriteLine("El mensaje contiene el prefijo '999/' o '9991/'. Eliminándolo...");
+                                        response = response.Substring(4); // Eliminar los primeros 4 caracteres ("999/")
+                                    }
+
+                                    // Pasar el mensaje modificado a ActualizarPartidasGrid
+                                    this.Invoke(new Action(() => ActualizarPartidasGrid(response)));
+                                    break;
+
+                                case 30: // Delete confirmation
+                                    nForm = Convert.ToInt32(trozos[1]);
+                                    response = trozos[2].Split('\0')[0];
+
+                                    // Display the confirmation message received from the server
+                                    if (response.StartsWith("Player successfully deleted"))
+                                    {
+                                        SafeInvoke(this, () =>
+                                        {
+                                            MessageBox.Show(response, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        });
+
+                                        // Optional: Additional actions, such as updating the UI, can be placed here
+                                    }
+                                    else
+                                    {
+                                        SafeInvoke(this, () =>
+                                        {
+                                            MessageBox.Show(response, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        });
+                                    }
+                                    break;
+                               
+                                case 58:
+                                   
+                                    nForm = Convert.ToInt32(trozos[1]); 
+                                    response = trozos[2].Split('\0')[0]; 
+
                                     
-                                }
-                                break;
+                                    SafeInvoke(lblresphours, () =>
+                                    {
+                                        lblresphours.Text = ""; 
+                                        lblresphours.Text = response; 
+                                    });
+                                    break;
 
 
-                            default:
-                                Console.WriteLine("Código no reconocido: " + codigo);
-                                break;
+
+                                case 57:
+                                   
+                                    nForm = Convert.ToInt32(trozos[1]); 
+                                    response = trozos[2].Split('\0')[0];
+
+                                   
+                                    SafeInvoke(playerswith, () =>
+                                    {
+                                        playerswith.Text = ""; 
+                                        playerswith.Text = response; 
+                                    });
+                                    break;
+
+
+                                case 96: // INVITATION 1
+                                    trozos = response.Split('/');
+                                    nForm = Convert.ToInt32(trozos[0]);
+                                    response = trozos[1];
+                                    this.Invoke(new Action(() => Invitation1(mensajeCompleto)));
+                                    break;
+
+                                case 97: // INVITATION RECEIVED
+                                    trozos = response.Split('/');
+                                    nForm = Convert.ToInt32(trozos[0]);
+                                    response = trozos[1];
+                                    this.Invoke(new Action(() => ProcesarCodigo97(response)));
+                                    break;
+
+                                case 98: // INVITATION RECEIVED
+                                    trozos = response.Split('/');
+                                    nForm = Convert.ToInt32(trozos[0]);
+                                    response = trozos[1];
+                                    string[] partes = mensajeCompleto.Split('/');
+                                    Console.WriteLine("Contenido: " + mensajeCompleto);
+                                    Console.WriteLine("Contenido 2: " + partes[1]);
+                                    if (partes.Length == 2)
+                                    {
+                                        string invitador = partes[1];
+                                        this.Invoke(new Action(() =>
+                                        {
+                                            if (selectedUser == invitador)
+                                            {
+                                                MessageBox.Show("Se ha rechazado la invitación.");
+                                            }
+                                        }));
+                                    }
+                                    break;
+
+                                case 24:
+                                    trozos = response.Split('/');
+                                    nForm = Convert.ToInt32(trozos[0]);
+                                    response = trozos[1];
+                                    {
+                                        string username = trozos[1];
+                                        string message = trozos[2];
+                                        string chatMessage = $"{username}: {message}";
+
+                                        formularios[nForm].TomaMensajeChat(chatMessage);
+
+                                        /*
+                                        this.Invoke(new Action(() => {
+                                            labelCHAT.Text += chatMessage + Environment.NewLine;
+                                        }));
+                                        */
+                                    }
+                                    break;
+
+
+
+
+                                default:
+                                    Console.WriteLine("Código no reconocido: " + codigo);
+                                    break;
+                            }
                         }
                     }
                 }
                 catch (SocketException ex)
                 {
-                    MessageBox.Show("Se perdió la conexión con el servidor: " + ex.Message);
+                    this.Invoke(new Action(() => MessageBox.Show("Se perdió la conexión con el servidor: " + ex.Message)));
                     break;
                 }
             }
         }
 
+
+
+
         // Métodos auxiliares para refactorizar el código
-        private void ProcesarListaJugadores(string[] trozos)
+        private void Invitation1(string mensajeCompleto)
+        {
+            // Muestra el mensaje completo recibido en la consola
+            Console.WriteLine($"Mensaje completo recibido: {mensajeCompleto}");
+
+            // Divide el mensaje en partes usando "/"
+            string[] partes = mensajeCompleto.Split('/');
+
+            // Verifica si el mensaje incluye el formulario al inicio
+            if (partes.Length >= 5 && int.TryParse(partes[0], out _))
+            {
+                partes = partes.Skip(1).ToArray(); // Ignorar el código y el formulario (primer elemento)
+            }
+
+            // Comprueba si el mensaje tiene exactamente 4 partes después de la validación
+            if (partes.Length == 4)
+            {
+                string invitador = partes[1]; // Quien envía la invitación
+                string invitado = partes[2];  // A quién se envía la invitación
+                string partida = partes[3];   // Nombre de la partida
+                string decision = partes[0];  // Decisión actual
+
+                // Imprime los valores de los parámetros para verificar su contenido
+                //Console.WriteLine($"Invitador: {invitador}");
+                //Console.WriteLine($"Invitado: {invitado}");
+                //Console.WriteLine($"Partida: {partida}");
+                //Console.WriteLine($"Decisión: {decision}");
+
+                // Comprueba si el usuario actual es el invitado
+                if (selectedUser.Trim() == invitado.Trim())
+                {
+                    // Crea una instancia del nuevo formulario con los parámetros
+                    using (InvitationForm invitationForm = new InvitationForm(invitador, partida))
+                    {
+                        // Muestra el formulario de forma modal
+                        invitationForm.ShowDialog();
+
+                        // Revisa la respuesta del usuario
+                        if (invitationForm.IsAccepted)
+                        {
+                            MessageBox.Show("Has aceptado la invitación.");
+                            // Lógica para unirse a la partida
+                            string mensaje = $"97/{mainform}/{invitador}/{invitado}/{partida}/1";
+                            byte[] msg = Encoding.ASCII.GetBytes(mensaje);
+                            server.Send(msg);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Has rechazado la invitación.");
+                            string mensaje = $"97/{mainform}/{invitador}/{invitado}/{partida}/0";
+                            byte[] msg = Encoding.ASCII.GetBytes(mensaje);
+                            server.Send(msg);
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("El mensaje no es relevante para este usuario.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("El mensaje no tiene el formato esperado.");
+            }
+        }
+
+
+
+
+
+
+
+
+
+        private void ProcesarCodigo97(string response)
+        {
+            string[] trozos = response.Split('/');
+
+            if (trozos.Length > 0)
+            {
+                if (int.TryParse(trozos[0], out int type_operation))
+                {
+                    if (type_operation == 0) // Respuesta a nuestra invitación
+                    {
+                        ProcesarRespuestaInvitacion(trozos);
+                    }
+                    else if (type_operation == 1) // Recibimos una invitación de otro jugador
+                    {
+                        ProcesarInvitacionRecibida(trozos);
+                    }
+                }
+            }
+        }
+
+        private void ProcesarRespuestaInvitacion(string[] trozos)
+        {
+            if (trozos.Length >= 3)
+            {
+                string tipo = trozos[1];
+
+                if (tipo == "correcto")
+                {
+                    string invitedList = trozos[2];
+                    //MessageBox.Show("Invitation sent successfully to: " + invitedList);
+                }
+                else
+                {
+                    //MessageBox.Show("Failed to send the invitation.");
+                }
+            }
+        }
+
+        private void ProcesarInvitacionRecibida(string[] trozos)
+        {
+            if (trozos.Length >= 2)
+            {
+                string inviting = trozos[1];
+                //MessageBox.Show("You have received an invitation from: " + inviting);
+            }
+        }
+
+
+
+
+        private void ProcesarListaJugadores1(string[] trozos)
         {
             Console.WriteLine($"Mensaje recibido del servidor: {string.Join("/", trozos)}");
 
-            if (trozos.Length > 2 && !string.IsNullOrEmpty(trozos[2].Trim()))
+            if (trozos.Length > 6 && !string.IsNullOrEmpty(trozos[2].Trim()) && !string.IsNullOrEmpty(trozos[4].Trim()) && !string.IsNullOrEmpty(trozos[6].Trim()))
             {
-                string[] connectedPlayerList = trozos[2]
+                // Procesar jugadores conectados
+                string[] connectedPlayerList = trozos[3]
                     .Split(',')
                     .Select(p => p.Trim())
                     .Where(p => !string.IsNullOrEmpty(p))
@@ -413,52 +782,275 @@ namespace ClientApplication
                 foreach (var player in connectedPlayerList)
                 {
                     Console.WriteLine($"- {player}");
-                }
 
-                for (int i = dt.Rows.Count - 1; i >= 0; i--)
-                {
-                    DataRow row = dt.Rows[i];
-                    string playerName = row["PlayerName"].ToString().Trim();
-
-                    if (!connectedPlayerList.Contains(playerName))
-                    {
-                        Console.WriteLine($"Eliminando jugador desconectado: {playerName}");
-                        dt.Rows.RemoveAt(i);
-                    }
-                }
-
-                foreach (string playerName in connectedPlayerList)
-                {
-                    bool exists = dt.AsEnumerable().Any(row => row.Field<string>("PlayerName") == playerName);
-
+                    // Verificar si el jugador ya está en la tabla
+                    bool exists = dt.AsEnumerable().Any(row => row.Field<string>("PlayerName") == player);
                     if (!exists)
                     {
-                        Console.WriteLine($"Añadiendo jugador conectado: {playerName}");
-                        dt.Rows.Add(playerName);
+                        dt.Rows.Add(player); // Agregar el jugador si no existe
                     }
                 }
 
-                SafeInvoke(onlineGrid, () => {
+                SafeInvoke(onlineGrid, () =>
+                {
                     onlineGrid.DataSource = dt;
-                    onlineGrid.Refresh();
+                    onlineGrid.Refresh(); // Actualizar la vista del grid
                 });
-                Console.WriteLine("Actualización del DataGridView completada.");
-            }
-            else if (trozos.Length > 2)
-            {
-                Console.WriteLine("No hay jugadores conectados. Limpiando la tabla.");
-                dt.Rows.Clear(); 
-                SafeInvoke(onlineGrid, () => {
-                    onlineGrid.DataSource = dt;
-                    onlineGrid.Refresh();
+
+                // Procesar partidas disponibles
+                string[] gameList = trozos[5]
+                    .Split(',')
+                    .Select(g => g.Trim())
+                    .Where(g => !string.IsNullOrEmpty(g))
+                    .ToArray();
+
+                string[] playerCountList = trozos[7]
+                    .Split(',')
+                    .Select(c => c.Trim())
+                    .Where(c => !string.IsNullOrEmpty(c))
+                    .ToArray();
+
+                Console.WriteLine("Lista actual de partidas disponibles:");
+                for (int i = 0; i < gameList.Length; i++)
+                {
+                    string game = gameList[i];
+                    string playerCount = (i < playerCountList.Length) ? playerCountList[i] : "0";
+
+                    Console.WriteLine($"- {game}: {playerCount} jugadores");
+
+                    // Verificar si la partida ya está en la tabla
+                    bool exists = dtGames.AsEnumerable().Any(row => row.Field<string>("GameName") == game);
+                    if (!exists)
+                    {
+                        dtGames.Rows.Add(game); // Agregar la partida si no existe
+                    }
+                }
+
+                SafeInvoke(gamesGrid, () =>
+                {
+                    gamesGrid.DataSource = dtGames;
+                    gamesGrid.Refresh(); // Actualizar la vista del grid
+
+                    // Aplicar colores a las celdas según el número de jugadores
+                    for (int i = 0; i < gamesGrid.Rows.Count; i++)
+                    {
+                        string gameName = gamesGrid.Rows[i].Cells[0].Value.ToString();
+                        string playerCount = (i < playerCountList.Length) ? playerCountList[i] : "0";
+                        int count = int.TryParse(playerCount, out int result) ? result : 0;
+
+                        if (count == 4)
+                        {
+                            gamesGrid.Rows[i].Cells[0].Style.BackColor = Color.LightCoral; // Rojo para 4 jugadores
+                        }
+                        else
+                        {
+                            gamesGrid.Rows[i].Cells[0].Style.BackColor = Color.LightGreen; // Verde para menos de 4 jugadores
+                        }
+                    }
                 });
+
+                Console.WriteLine("Actualización de DataGrids completada.");
             }
             else
             {
-                Console.WriteLine("Mensaje mal formado o sin datos de jugadores.");
+                Console.WriteLine("No hay jugadores conectados o partidas disponibles.");
             }
         }
 
+
+
+
+
+
+
+
+
+
+        private void ProcesarLista2(string[] trozos)
+        {
+            Console.WriteLine($"Mensaje recibido del servidor: {string.Join("/", trozos)}");
+
+            if (trozos.Length > 3 && !string.IsNullOrEmpty(trozos[1].Trim()) && !string.IsNullOrEmpty(trozos[3].Trim()))
+            {
+                // Procesar la lista de partidas
+                string[] gameList = trozos[2]
+                    .Split(',')
+                    .Select(g => g.Trim())
+                    .Where(g => !string.IsNullOrEmpty(g))
+                    .ToArray();
+
+                string[] playerCounts = trozos[4]
+                    .Split(',')
+                    .Select(c => c.Trim())
+                    .Where(c => !string.IsNullOrEmpty(c))
+                    .ToArray();
+
+                Console.WriteLine("Lista actual de partidas disponibles:");
+                dtGames.Rows.Clear(); // Limpiar tabla antes de actualizar
+
+                for (int i = 0; i < gameList.Length; i++)
+                {
+                    string game = gameList[i];
+                    string playerCount = (i < playerCounts.Length) ? playerCounts[i] : "0";
+
+                    dtGames.Rows.Add(game); // Agregar la partida a la tabla
+
+                    Console.WriteLine($"- {game}: {playerCount} jugadores");
+                }
+
+                SafeInvoke(gamesGrid, () =>
+                {
+                    gamesGrid.DataSource = null; // Desvincular para evitar conflictos
+                    gamesGrid.DataSource = dtGames; // Vincular nuevamente
+                    gamesGrid.Refresh();
+
+                    // Recorrer las filas y colorear según el número de jugadores
+                    foreach (DataGridViewRow row in gamesGrid.Rows)
+                    {
+                        string gameName = row.Cells[0].Value?.ToString();
+                        int playerCount = int.Parse(playerCounts[Array.IndexOf(gameList, gameName)]);
+
+                        if (playerCount == 4)
+                        {
+                            row.DefaultCellStyle.BackColor = Color.LightCoral; // Rojo claro para partidas con 4 jugadores
+                        }
+                        else if (playerCount < 4)
+                        {
+                            row.DefaultCellStyle.BackColor = Color.LightGreen; // Verde claro para partidas con menos de 4 jugadores
+                        }
+                    }
+                });
+
+                Console.WriteLine("Actualización de gamesGrid completada.");
+            }
+            else
+            {
+                Console.WriteLine("No hay partidas disponibles.");
+            }
+        }
+
+        private void ActualizarPartidasGrid(string response)
+        {
+            if (string.IsNullOrWhiteSpace(response))
+            {
+                Console.WriteLine("El mensaje recibido está vacío.");
+                return;
+            }
+
+            // Dividir el mensaje en secciones usando "/numjug/"
+            string[] secciones = response.Split(new[] { "/numjug/" }, StringSplitOptions.None);
+            if (secciones.Length != 2)
+            {
+                Console.WriteLine("El mensaje no contiene las secciones esperadas. Formato incorrecto.");
+                return;
+            }
+
+            // Extraer partidas y números de jugadores
+            string[] partidas = secciones[0].Split(',');  // Partidas
+            string[] numJugadores = secciones[1].Split(',');  // Números de jugadores
+
+            Console.WriteLine("Partidas recibidas: " + string.Join(", ", partidas));
+            Console.WriteLine("Número de jugadores recibidos: " + string.Join(", ", numJugadores));
+
+            if (partidas.Length == 0 || numJugadores.Length == 0)
+            {
+                Console.WriteLine("No hay datos de partidas o jugadores para procesar.");
+                return;
+            }
+
+            // Actualizar el DataGridView
+            SafeInvoke(gamesGrid, () =>
+            {
+                // Limpia el DataTable antes de agregar nuevas filas
+                dtGames.Rows.Clear();
+
+                for (int i = 0; i < partidas.Length; i++)
+                {
+                    string partida = partidas[i].Trim();
+                    string jugadores = i < numJugadores.Length ? numJugadores[i].Trim() : "0";
+
+                    if (int.TryParse(jugadores, out int numJugadoresInt))
+                    {
+                        // Agregar la fila al DataTable
+                        DataRow nuevaFila = dtGames.NewRow();
+                        nuevaFila["GameName"] = partida; // Asegúrate de que la columna en el DataTable se llama "GameName"
+                        dtGames.Rows.Add(nuevaFila);
+
+                        // Buscar la fila correspondiente en el DataGridView para colorearla
+                        var rowIndex = dtGames.Rows.Count - 1;
+                        var row = gamesGrid.Rows[rowIndex];
+                        row.DefaultCellStyle.BackColor = numJugadoresInt == 4 ? Color.LightCoral : Color.LightGreen;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error interpretando el número de jugadores para la partida '{partida}'.");
+                    }
+                }
+
+                gamesGrid.Refresh();
+            });
+        }
+
+
+
+
+
+
+
+        /*
+        private void ProcesarRobadaJugador(string response, string posicion)
+        {
+
+            if (!string.IsNullOrEmpty(response))
+            {
+                string[] ListaCartas = response.Split(',');
+                string[] color = ListaCartas[1].Split('/');
+
+
+
+
+                // Código 100: Robar una carta (2 elementos: número y color)
+                if (posicion == "1" && ListaCartas.Length == 2)
+                {
+                    SafeInvoke(buttoncarta1, () => {
+                        buttoncarta1.BackColor = ObtenerColorDeCarta(color[0]);
+                        buttoncarta1.Text = ListaCartas[0];
+                        cartaJugador1.Color = color[0];
+                        cartaJugador1.Numero = buttoncarta1.Text;
+
+                    });
+                }
+                if (posicion == "2" && ListaCartas.Length == 2)
+                {
+                    SafeInvoke(buttoncarta2, () => {
+                        buttoncarta2.BackColor = ObtenerColorDeCarta(color[0]);
+                        buttoncarta2.Text = ListaCartas[0];
+                        cartaJugador2.Color = color[0];
+                        cartaJugador2.Numero = buttoncarta2.Text;
+                    });
+                }
+                if (posicion == "3" && ListaCartas.Length == 2)
+                {
+                    SafeInvoke(buttoncarta3, () => {
+                        buttoncarta3.BackColor = ObtenerColorDeCarta(color[0]);
+                        buttoncarta3.Text = ListaCartas[0];
+                        cartaJugador3.Color = color[0];
+                        cartaJugador3.Numero = buttoncarta3.Text;
+                    });
+                }
+                if (posicion == "4" && ListaCartas.Length == 2)
+                {
+                    SafeInvoke(buttoncarta4, () => {
+                        buttoncarta4.BackColor = ObtenerColorDeCarta(color[0]);
+                        buttoncarta4.Text = ListaCartas[0];
+                        cartaJugador4.Color = color[0];
+                        cartaJugador4.Numero = buttoncarta4.Text;
+                    });
+                }
+            }
+        }
+        */
+        /*
         private void ProcesarCartasJugador(string response, int cantidadCartasEsperadas)
         {
             if (!string.IsNullOrEmpty(response))
@@ -515,7 +1107,7 @@ namespace ClientApplication
         }
 
 
-
+        */
 
 
         //Nos conectamos al servidor
@@ -550,7 +1142,7 @@ namespace ClientApplication
 
         //Nos desconectamos
 
-        private void Desconnection_Click(object sender, EventArgs e)
+        private void Disconnection_Click(object sender, EventArgs e)
         {
             if (server == null || !server.Connected)
             {
@@ -558,15 +1150,15 @@ namespace ClientApplication
                 return;
             }
             alreadyLogged = false;
-            lblTitle.Text = "Welcome to UNO Game! Log in to play!";
-            
+            lblTitle.Text = "Welcome to UNO Game Main Menu! Log in to play!";
+
             dt.Rows.Clear(); // Limpia todas las filas del DataTable
             onlineGrid.DataSource = null;
             SafeInvoke(onlineGrid, () => {
                 onlineGrid.DataSource = dt;
             });
-
-            string mensaje = "0/" + username.Text;
+            panelUsuario.Hide();
+            string mensaje = "0/" + mainform + "/" + selectedUser;
             byte[] msg = Encoding.ASCII.GetBytes(mensaje);
             server.Send(msg);
             SafeInvoke(indicadorConexion_label, () => {
@@ -583,7 +1175,7 @@ namespace ClientApplication
         // Registro
 
         private void Register_Click(object sender, EventArgs e)
-{
+        {
             if (server == null || !server.Connected)
             {
                 MessageBox.Show("You are not connected to the server.");
@@ -595,12 +1187,17 @@ namespace ClientApplication
                 MessageBox.Show("Both username and password fields must be filled out.");
                 return;
             }
+            if (username.Text == "admin")
+            {
+                MessageBox.Show("This username is not available.");
+                return;
+            }
 
-            string mensaje = "1/" + username.Text + "/" + password.Text;
+            string mensaje = "1/" + mainform + "/" + username.Text + "/" + password.Text;
             byte[] msg = Encoding.ASCII.GetBytes(mensaje);
             server.Send(msg);
             esperandoRespuesta = true;
-}
+        }
 
 
         //Log In
@@ -616,458 +1213,163 @@ namespace ClientApplication
                 }
                 if (!alreadyLogged)
                 {
-                    alreadyLogged = true;
                     selectedUser = username.Text;
-                    string mensaje = "2/" + username.Text + "/" + password.Text;
+                    string mensaje = "2/" + mainform + "/" + username.Text + "/" + password.Text;
                     byte[] msg = Encoding.ASCII.GetBytes(mensaje);
                     server.Send(msg);
                     esperandoRespuesta = true;
-                    SafeInvoke(lblTitle, () => {
-                        lblTitle.Text = "Welcome to UNO Game! You have logged in as " + selectedUser;
-                    });
                 }
                 else
                 {
                     MessageBox.Show("Ya has iniciado sesión. Desconectate antes de volver a intentarlo.");
                 }
-            } catch { MessageBox.Show("Error del cliente"); }
-            
-            
+            }
+            catch { MessageBox.Show("Error del cliente"); }
+
+
         }
-
-        // Juego para comprobar notificiones entre varios clientes
-
-        private void NotiRed_Click(object sender, EventArgs e)
-        {
-            EnviarMensajeCodigo("6/");
-        }
-
-        private void NotiBlue_Click(object sender, EventArgs e)
-        {
-            EnviarMensajeCodigo("7/");
-        }
-
-        private void NotiYellow_Click(object sender, EventArgs e)
-        {
-            EnviarMensajeCodigo("8/");
-        }
-
-        private void NotiGreen_Click(object sender, EventArgs e)
-        {
-            EnviarMensajeCodigo("9/");
-        }
-
-        private void howitworks_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("This functionality shows you the last card selected on the server by all the clients that have connected to it.");
-        }
-
-
 
         // unir a partida
         string gameName;
 
         private void btnJoinGame_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txtBuscarPartida.Text))
+            {
+                MessageBox.Show("El campo de texto no puede estar vacío.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             string partida = txtBuscarPartida.Text;
             EnviarMensajeUnirPartida(partida);
             gameName = partida;
+            //inicializarform2(gameName);
         }
         private void btnCreateGame_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txtBuscarPartida.Text))
+            {
+                MessageBox.Show("El campo de texto no puede estar vacío.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             string partida = txtBuscarPartida.Text;
             EnviarMensajeCrearPartida(partida);
             gameName = partida;
+            //inicializarform2(gameName);
         }
 
-        private void Unir1_Click(object sender, EventArgs e)
-        {
-            //EnviarMensajeUnirPartida(1);
-        }
-
-        private void Unir2_Click(object sender, EventArgs e)
-        {
-            //EnviarMensajeUnirPartida(2);
-        }
-
-        private void Unir3_Click(object sender, EventArgs e)
-        {
-            //EnviarMensajeUnirPartida(3);
-        }
-
-        private void Unir4_Click(object sender, EventArgs e)
-        {
-            //EnviarMensajeUnirPartida(4);
-        }
-
-        //------------------------- JUEGO  -------------------------\\
-
-
-
-        // Estructura para representar una carta
-        public class Carta
-        {
-            public string Numero { get; set; }
-            public string Color { get; set; }
-
-            public Carta(string numero, string color)
-            {
-                Numero = numero;
-                Color = color;
-            }
-        }
-
-        private Color ObtenerColorDeCarta(string color)
-        {
-            switch (color.ToLower())
-            {
-                case "azul":
-                    return Color.Blue;
-                case "rojo":
-                    return Color.Red;
-                case "verde":
-                    return Color.Green;
-                case "amarillo":
-                    return Color.Yellow;
-                default:
-                    return Color.Gray; // Si no se encuentra el color, se pinta el botón de gris
-            }
-        }
-
-
-        private void fourcards_Click(object sender, EventArgs e)
-        {
-            if (server == null || !server.Connected)
-            {
-                MessageBox.Show("You are not connected to the server.");
-                return;
-            }
-
-            // Send a request to the server to get the list of connected players
-            string mensaje = "22/LIST/";
-            byte[] msg = Encoding.ASCII.GetBytes(mensaje);
-
-            try
-            {
-                server.Send(msg);
-            }
-            catch (SocketException ex)
-            {
-                MessageBox.Show("Error sending data to the server: " + ex.Message);
-                return;
-            }
-            esperandoRespuesta = false;
-
-
-        }
-
-
-        Carta cartaJugador1, cartaJugador2, cartaJugador3, cartaJugador4, cartaMedio;
-        // Función para comprobar si la carta del jugador puede tirarse
-        public bool PuedeTirarCarta(Carta cartaJugador, Carta cartaMedio)
-        {
-            return cartaJugador.Numero == cartaMedio.Numero || cartaJugador.Color == cartaMedio.Color;
-        }
-
-        private void button24_Click(object sender, EventArgs e)
-        {
-
-            MessageBox.Show(Convert.ToString(cartaMedio.Numero));
-
-            MessageBox.Show(Convert.ToString(cartaJugador1.Numero));
-
-            MessageBox.Show(Convert.ToString(cartaJugador2.Numero));
-
-        }
-
-        
-
-      
-     
-
-        private void card1_Click(object sender, EventArgs e)
-        {
-            if (PuedeTirarCarta(cartaJugador1, cartaMedio))
-            {
-                if (PuedeTirarCarta(cartaJugador1, cartaMedio))
-                {
-                    // Actualización segura de la interfaz
-                    SafeInvoke(buttoncartamedio, () =>
-                    {
-                        cartaMedio.Color = cartaJugador1.Color;
-                        buttoncartamedio.BackColor = buttoncarta1.BackColor;
-                    });
-
-                    SafeInvoke(buttoncarta1, () =>
-                    {
-                        cartaJugador1.Color = "Gray";
-                        buttoncarta1.BackColor = Color.Gray;
-                    });
-
-                    SafeInvoke(buttoncartamedio, () =>
-                    {
-                        cartaMedio.Numero = cartaJugador1.Numero;
-                        buttoncartamedio.Text = buttoncarta1.Text;
-                    });
-
-                    SafeInvoke(buttoncarta1, () =>
-                    {
-                        cartaJugador1.Numero = null;
-                        buttoncarta1.Text = "";
-                    });
-
-                    // Enviar mensaje con el número y color de la carta
-                    EnviarMensajeCodigoCarta("23/" + cartaMedio.Numero + "," + cartaMedio.Color);
-                }
-                
-            }
-            else
-            {
-                MessageBox.Show("No puedes tirar esta carta");
-            }
-            //esperandoRespuesta = true;
-        }
-  
-
-        private void card2_Click(object sender, EventArgs e)
-        {
-            if (PuedeTirarCarta(cartaJugador2, cartaMedio))
-            {
-                //Actualización segura de la interfaz
-                SafeInvoke(buttoncartamedio, () => {
-                    cartaMedio.Color = cartaJugador2.Color;
-                    buttoncartamedio.BackColor = buttoncarta2.BackColor;
-                });
-
-                SafeInvoke(buttoncarta2, () =>
-                {
-                    cartaJugador2.Color = "Gray";
-                    buttoncarta2.BackColor = Color.Gray;
-                });
-
-                SafeInvoke(buttoncartamedio, () =>
-                {
-                    cartaMedio.Numero = cartaJugador2.Numero;
-                    buttoncartamedio.Text = buttoncarta2.Text;
-                });
-
-                SafeInvoke(buttoncarta2, () =>
-                {
-                    cartaJugador2.Numero = null;
-                    buttoncarta2.Text = "";
-                });
-
-                // Enviar mensaje con el número y color de la carta
-                EnviarMensajeCodigoCarta("23/" + cartaMedio.Numero + "," + cartaMedio.Color);
-
-
-
-            }
-            else
-            {
-                MessageBox.Show("No puedes tirar esta carta");
-            }
-            //esperandoRespuesta = true;
-
-        }
-
-        private void panelBarraTitulo_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void onlineGrid_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            // Obtenemos los nombres de los jugadores conectados desde la DataTable
-            string invited;
-            //if (creator != null)    //NOMES POT CONVIDAR EL HOST DE LA PARTIDA
-            {
-                if (onlineGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value != null)
-                {
-                    invited = onlineGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-
-                    string mensaje = "97/" + selectedUser + "/" + invited + "/";
-                    MessageBox.Show(mensaje);
-                    byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
-                    server.Send(msg);
-                }
-            }
-
-            // Mostramos un mensaje para confirmar el envío
-            //MessageBox.Show("Mensaje enviado con los jugadores: {string.Join(", ", playersList)}");
-        }
 
         private void onlineGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            string invited;
-            //if (creator != null)    //NOMES POT CONVIDAR EL HOST DE LA PARTIDA
+            if (e.RowIndex == -1) // Verifica si se hace clic en la cabecera
             {
+                return;
+            }
+            else
+            {
+                string invited;
+
+                // Verifica si la label xtBuscarPartida está vacía
+                if (string.IsNullOrWhiteSpace(txtBuscarPartida.Text))
+                {
+                    MessageBox.Show("Unete a una partida antes");
+                    return;
+                }
+
+                // NOMES POT CONVIDAR EL HOST DE LA PARTIDA
                 if (onlineGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value != null)
                 {
                     invited = onlineGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
 
-                    string mensaje = "97/" + selectedUser + "/" + invited + "/";
-                    MessageBox.Show(mensaje);
+                    string mensaje = $"96/{mainform}/" + selectedUser + "/" + invited + "/" + txtBuscarPartida.Text;
+                    //MessageBox.Show(mensaje);
                     byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
                     server.Send(msg);
                 }
             }
         }
 
-        //CHAT
 
-        private void sendbuttom_Click(object sender, EventArgs e)
+        private void gamesGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (server == null || !server.Connected)
+            if (e.RowIndex == -1) // Verifica si se hace clic en la cabecera
             {
-                MessageBox.Show("You are not connected to the server.");
+                // No hacer nada, ya que no queremos que pase nada al hacer clic en la cabecera.
                 return;
             }
-
-            if (string.IsNullOrWhiteSpace(username.Text))
+            if (e.RowIndex >= 0)
             {
-                MessageBox.Show("You must log in first before sending a message.");
-                return;
-            }
+                // Obtener el nombre de la partida desde la celda seleccionada
+                string partida = gamesGrid.Rows[e.RowIndex].Cells[0].Value?.ToString();
 
-            if (string.IsNullOrWhiteSpace(lblsend.Text))
-            {
-                MessageBox.Show("To send a message, you must first type it in the input bar.");
-                return;
-            }
-
-            string mensaje = "24/" + username.Text + "/" + lblsend.Text;
-            byte[] msg = Encoding.ASCII.GetBytes(mensaje);
-            server.Send(msg);
-            lblsend.Text = string.Empty;
-            //esperandoRespuesta = true;
-        }
-
-        private void card3_Click(object sender, EventArgs e)
-        {
-            if (PuedeTirarCarta(cartaJugador3, cartaMedio))
-            {
-                //Actualización segura de la interfaz
-                SafeInvoke(buttoncartamedio, () => {
-                    cartaMedio.Color = cartaJugador3.Color;
-                    buttoncartamedio.BackColor = buttoncarta3.BackColor;
-                });
-
-                SafeInvoke(buttoncarta3, () =>
+                if (!string.IsNullOrEmpty(partida))
                 {
-                    cartaJugador3.Color = "Gray";
-                    buttoncarta3.BackColor = Color.Gray;
-                });
+                    // Reutilizar el código de btnJoinGame_Click
+                    EnviarMensajeUnirPartida(partida);
+                    gameName = partida;
 
-                SafeInvoke(buttoncartamedio, () =>
+
+                }
+                else
                 {
-                    cartaMedio.Numero = cartaJugador3.Numero;
-                    buttoncartamedio.Text = buttoncarta3.Text;
-                });
-
-                SafeInvoke(buttoncarta3, () =>
-                {
-                    cartaJugador3.Numero = null;
-                    buttoncarta3.Text = "";
-                });
-
-                // Enviar mensaje con el número y color de la carta
-                EnviarMensajeCodigoCarta("23/" + cartaMedio.Numero + "," + cartaMedio.Color);
-
-
+                    MessageBox.Show("El nombre de la partida está vacío. Seleccione una partida válida.");
+                }
             }
-            else
-            {
-                MessageBox.Show("No puedes tirar esta carta");
-            }
-            //esperandoRespuesta = true;
 
         }
 
-        
-
-
-        private void card4_Click(object sender, EventArgs e)
+        private void lblAvailableGames_Click(object sender, EventArgs e)
         {
-            if (PuedeTirarCarta(cartaJugador4, cartaMedio))
-            {
-
-                //Actualización segura de la interfaz
-                SafeInvoke(buttoncartamedio, () => {
-                    cartaMedio.Color = cartaJugador4.Color;
-                    buttoncartamedio.BackColor = buttoncarta4.BackColor;
-                });
-
-                SafeInvoke(buttoncarta4, () =>
-                {
-                    cartaJugador4.Color = "Gray";
-                    buttoncarta4.BackColor = Color.Gray;
-                });
-
-                SafeInvoke(buttoncartamedio, () =>
-                {
-                    cartaMedio.Numero = cartaJugador4.Numero;
-                    buttoncartamedio.Text = buttoncarta4.Text;
-                });
-
-                SafeInvoke(buttoncarta4, () =>
-                {
-                    cartaJugador4.Numero = null;
-                    buttoncarta4.Text = "";
-                });
-                EnviarMensajeCodigoCarta("23/" + cartaMedio.Numero + "," + cartaMedio.Color);
-            }
-            else
-            {
-                MessageBox.Show("No puedes tirar esta carta");
-            }
-            //esperandoRespuesta = true;
 
         }
 
-
-
-
-        private void middlecard_Click(object sender, EventArgs e)
+        private void invitationinfo_Click(object sender, EventArgs e)
         {
-            if (server == null || !server.Connected)
-            {
-                // Uso de SafeInvoke para asegurarse de que se ejecute en el hilo de la UI
-                SafeInvoke(this, () =>
-                {
-                    MessageBox.Show("You are not connected to the server.");
-                });
-                return;
-            }
+            MessageBox.Show("In order to invite a player to your own game, you must first enter the name of the game in the box above the create button. Then go to the table of connected players and click on the player you want to play with. Finally you will get an acceptance message from the guest if he/she accepts or not. ");
+        }
 
-            // Send a request to the server to get the list of connected players
-            string mensaje = "21/LIST/";
-            byte[] msg = Encoding.ASCII.GetBytes(mensaje);
+        private void lblTitle_Click(object sender, EventArgs e)
+        {
 
-            try
-            {
-                server.Send(msg);
-            }
-            catch (SocketException ex)
-            {
-                // Usamos SafeInvoke también para mostrar mensajes de error de forma segura en la UI
-                SafeInvoke(this, () =>
-                {
-                    MessageBox.Show("Error sending data to the server: " + ex.Message);
-                });
-                return;
-            }
+        }
 
-            //esperandoRespuesta = false;
+        // multiple
+        private void PonerEnMarchaFormulario(string gameName)
+        {
+            int cont = formularios.Count;
+            string partidaName = gameName; // Obtener el nombre de la partida desde el TextBox
+            PartidaForm f = new PartidaForm(cont, server, selectedUser, isConnected, this, partidaName, isCreator);
+            formularios.Add(f);
+            f.ShowDialog();
         }
 
 
+        private void inicializarform2(string gameName)
+        {
+            ThreadStart ts = delegate { PonerEnMarchaFormulario(gameName); };
+            Thread T = new Thread(ts);
+            T.Start();
+        }
 
 
+        private void gamesGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
 
+        }
 
+        private void label1_Click(object sender, EventArgs e)
+        {
 
+        }
 
+        private void buttonChangePswd_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void password_TextChanged(object sender, EventArgs e)
+        {
+
+        }
 
 
         // Manejador de errores del DataGridView
@@ -1076,8 +1378,172 @@ namespace ClientApplication
             e.ThrowException = false; // Evita mostrar el cuadro de error por defecto
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
 
-     
+        }
 
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        
+        private Color[] colores = { Color.Red, Color.Green, Color.Blue, Color.Orange, Color.Black, Color.White, Color.Pink }; // Small array of colors
+        private int colorIndex = 0; // Índice para rastrear el color actual
+
+        private void btnChangeColor_Click(object sender, EventArgs e)
+        {
+            // Establece el color del Label con el color actual
+            lblUserProfile.ForeColor = colores[colorIndex];
+            lblUserNameLittle.ForeColor = colores[colorIndex];
+
+            // Avanza al siguiente color, reiniciando al principio cuando llegue al final
+            colorIndex = (colorIndex + 1) % colores.Length;
+
+            // Cambia también el color del botón (opcional)
+            btnChangeColor.ForeColor = colores[colorIndex];
+        }
+
+        private void btnDeleteUser_Click(object sender, EventArgs e)
+        {
+            eliminarUsuarioForm nuevo = new eliminarUsuarioForm(server, selectedUser,isConnected);
+            nuevo.ShowDialog();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (!isConnected)
+            {
+                MessageBox.Show("You are not connected to the server.");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(selectedUser))
+            {
+                MessageBox.Show("You must be logged in to perform this action.");
+                return;
+            }
+
+            
+            string mensaje = $"57/{mainform}/{selectedUser}";
+            byte[] msg = Encoding.ASCII.GetBytes(mensaje);
+
+            
+            server.Send(msg);
+
+            
+            esperandoRespuesta = true;
+
+            
+        }
+
+        private void panelUsuario_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void gamesinhours_Click(object sender, EventArgs e)
+        {
+            if (!isConnected)
+            {
+                MessageBox.Show("You are not connected to the server.");
+                return;
+            }
+
+            // Obtener el número de formulario y las horas ingresadas
+            int numForm = mainform; // Usamos el número de formulario principal
+            string horas = lblgameshours.Text.Trim(); // Eliminar espacios adicionales
+
+            // Validar que el usuario haya ingresado un valor válido
+            if (string.IsNullOrEmpty(horas) || !int.TryParse(horas, out int horasNum) || horasNum <= 0)
+            {
+                MessageBox.Show("Please enter a valid number of hours.");
+                return;
+            }
+
+            // Construir el mensaje para enviar al servidor
+            string message = $"58/{numForm}/{horas}";
+
+            // Enviar el mensaje al servidor
+            byte[] msg = Encoding.ASCII.GetBytes(message);
+            server.Send(msg);
+
+            // Informar en el cliente que el mensaje se envió
+            Console.WriteLine($"Mensaje enviado al servidor: {message}");
+            esperandoRespuesta = true;
+        }
+
+        private void label9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblresphours_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblgameshours_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label13_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panelBarraTitulo_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void resultados_Click(object sender, EventArgs e)
+        {
+            if (!isConnected)
+            {
+                MessageBox.Show("You are not connected to the server.");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(selectedUser))
+            {
+                MessageBox.Show("You must be logged in to perform this action.");
+                return;
+            }
+
+            // Obtener el jugador ingresado en el textbox
+            string jugador2 = resultadostex.Text.Trim();
+
+            if (string.IsNullOrEmpty(jugador2))
+            {
+                MessageBox.Show("Please enter a valid player name.");
+                return;
+            }
+
+            // Construir el mensaje para el servidor
+            string mensaje = $"53/{mainform}/{selectedUser}/{jugador2}";
+
+            // Enviar el mensaje al servidor
+            byte[] msg = Encoding.ASCII.GetBytes(mensaje);
+            server.Send(msg);
+
+            // Indicar que estamos esperando una respuesta
+            esperandoRespuesta = true;
+
+            // Informar en la consola del cliente
+            Console.WriteLine($"Mensaje enviado al servidor: {mensaje}");
+        }
     }
 }
