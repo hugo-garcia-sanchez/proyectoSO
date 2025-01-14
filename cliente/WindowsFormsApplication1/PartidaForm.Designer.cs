@@ -44,6 +44,8 @@
             this.middlecard = new System.Windows.Forms.Button();
             this.fourcards = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
+            this.pasaturno = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.panelBarraTitulo.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -257,7 +259,7 @@
             this.fourcards.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.fourcards.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold);
             this.fourcards.ForeColor = System.Drawing.Color.White;
-            this.fourcards.Location = new System.Drawing.Point(198, 62);
+            this.fourcards.Location = new System.Drawing.Point(384, 62);
             this.fourcards.Name = "fourcards";
             this.fourcards.Size = new System.Drawing.Size(180, 32);
             this.fourcards.TabIndex = 81;
@@ -277,6 +279,33 @@
             this.label2.TabIndex = 88;
             this.label2.Text = "label2";
             // 
+            // pasaturno
+            // 
+            this.pasaturno.BackColor = System.Drawing.Color.Black;
+            this.pasaturno.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.pasaturno.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold);
+            this.pasaturno.ForeColor = System.Drawing.Color.White;
+            this.pasaturno.Location = new System.Drawing.Point(198, 62);
+            this.pasaturno.Name = "pasaturno";
+            this.pasaturno.Size = new System.Drawing.Size(180, 32);
+            this.pasaturno.TabIndex = 89;
+            this.pasaturno.Text = "Pass Turn";
+            this.pasaturno.UseVisualStyleBackColor = false;
+            this.pasaturno.Click += new System.EventHandler(this.pasaturno_Click);
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.Black;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button1.Font = new System.Drawing.Font("Segoe UI Emoji", 12F, System.Drawing.FontStyle.Bold);
+            this.button1.ForeColor = System.Drawing.Color.White;
+            this.button1.Location = new System.Drawing.Point(512, 247);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(180, 32);
+            this.button1.TabIndex = 90;
+            this.button1.Text = "Give me cards";
+            this.button1.UseVisualStyleBackColor = false;
+            // 
             // PartidaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -284,6 +313,8 @@
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.BackgroundImage = global::WindowsFormsApplication1.Properties.Resources.fondo_oscuro;
             this.ClientSize = new System.Drawing.Size(1205, 527);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.pasaturno);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.robarboton);
             this.Controls.Add(this.middlecard);
@@ -323,5 +354,7 @@
         private System.Windows.Forms.Button middlecard;
         private System.Windows.Forms.Button fourcards;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button pasaturno;
+        private System.Windows.Forms.Button button1;
     }
 }

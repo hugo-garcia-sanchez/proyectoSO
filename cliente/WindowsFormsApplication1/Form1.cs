@@ -466,6 +466,14 @@ namespace ClientApplication
                                     //this.Invoke(new Action(() => ProcesarCartasJugador(response, 4)));
                                     break;
 
+                                case 44:
+                                    trozos = response.Split('/');
+                                    nForm = Convert.ToInt32(trozos[0]);
+                                    string juego = trozos[1];
+                                    string persona = trozos[2];
+                                    formularios[nForm].DameWinner(juego, persona);
+                                    break;
+
                                 case 37: // Maneja la carta central
                                     trozos = response.Split('/');
                                     nForm = Convert.ToInt32(trozos[0]);
@@ -1150,7 +1158,7 @@ namespace ClientApplication
         private void Connection_Click(object sender, EventArgs e)
         {
             IPAddress direc = IPAddress.Parse("10.4.119.5");
-            IPEndPoint ipep = new IPEndPoint(direc, 50062);
+            IPEndPoint ipep = new IPEndPoint(direc, 50061);
             // CLIENTE IP: SHIVA =  10.4.119.5                VBOX = 192.168.56.102
             // CLIENTE PUERTO: SHIVA =  50061                 VBOX = 9050
 

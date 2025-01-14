@@ -27,6 +27,6 @@ Versión 5 comunicada por Hugo
 URL del video de las funcionalidades: https://youtu.be/o3U4u2ET55Y?feature=shared
 
 Versión Final generada por Hugo
-Versión 5 verificada por Ivan e Iker
-Versión 5 comunicada por Jordi
+Versión Final  verificada por Ivan e Iker
+Versión Final  comunicada por Jordi
 URL del video: https://youtu.be/1JAJA_CCRTk

@@ -481,3 +481,29 @@ C:\Users\hgs09\Desktop\proyectoSO-main\cliente\WindowsFormsApplication1\obj\Debu
 C:\Users\hgs09\Desktop\proyectoSO-main\cliente\WindowsFormsApplication1\obj\Debug\clienteForm.csproj.CoreCompileInputs.cache
 C:\Users\hgs09\Desktop\proyectoSO-main\cliente\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.exe
 C:\Users\hgs09\Desktop\proyectoSO-main\cliente\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.pdb
+C:\Users\hgs09\Desktop\proyectoSO-VersionFinal\cliente\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe.config
+C:\Users\hgs09\Desktop\proyectoSO-VersionFinal\cliente\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe
+C:\Users\hgs09\Desktop\proyectoSO-VersionFinal\cliente\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.pdb
+C:\Users\hgs09\Desktop\proyectoSO-VersionFinal\cliente\WindowsFormsApplication1\obj\Debug\clienteForm.csproj.AssemblyReference.cache
+C:\Users\hgs09\Desktop\proyectoSO-VersionFinal\cliente\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.eliminarUsuarioForm.resources
+C:\Users\hgs09\Desktop\proyectoSO-VersionFinal\cliente\WindowsFormsApplication1\obj\Debug\ClientApplication.Form1.resources
+C:\Users\hgs09\Desktop\proyectoSO-VersionFinal\cliente\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.InvitationForm.resources
+C:\Users\hgs09\Desktop\proyectoSO-VersionFinal\cliente\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.PartidaForm.resources
+C:\Users\hgs09\Desktop\proyectoSO-VersionFinal\cliente\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.Properties.Resources.resources
+C:\Users\hgs09\Desktop\proyectoSO-VersionFinal\cliente\WindowsFormsApplication1\obj\Debug\clienteForm.csproj.GenerateResource.cache
+C:\Users\hgs09\Desktop\proyectoSO-VersionFinal\cliente\WindowsFormsApplication1\obj\Debug\clienteForm.csproj.CoreCompileInputs.cache
+C:\Users\hgs09\Desktop\proyectoSO-VersionFinal\cliente\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.exe
+C:\Users\hgs09\Desktop\proyectoSO-VersionFinal\cliente\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.pdb
+C:\Users\hgs09\Desktop\usa esta\cliente\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe.config
+C:\Users\hgs09\Desktop\usa esta\cliente\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe
+C:\Users\hgs09\Desktop\usa esta\cliente\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.pdb
+C:\Users\hgs09\Desktop\usa esta\cliente\WindowsFormsApplication1\obj\Debug\clienteForm.csproj.AssemblyReference.cache
+C:\Users\hgs09\Desktop\usa esta\cliente\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.eliminarUsuarioForm.resources
+C:\Users\hgs09\Desktop\usa esta\cliente\WindowsFormsApplication1\obj\Debug\ClientApplication.Form1.resources
+C:\Users\hgs09\Desktop\usa esta\cliente\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.InvitationForm.resources
+C:\Users\hgs09\Desktop\usa esta\cliente\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.PartidaForm.resources
+C:\Users\hgs09\Desktop\usa esta\cliente\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.Properties.Resources.resources
+C:\Users\hgs09\Desktop\usa esta\cliente\WindowsFormsApplication1\obj\Debug\clienteForm.csproj.GenerateResource.cache
+C:\Users\hgs09\Desktop\usa esta\cliente\WindowsFormsApplication1\obj\Debug\clienteForm.csproj.CoreCompileInputs.cache
+C:\Users\hgs09\Desktop\usa esta\cliente\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.exe
+C:\Users\hgs09\Desktop\usa esta\cliente\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.pdb

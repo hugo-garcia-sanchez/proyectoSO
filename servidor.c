@@ -1085,7 +1085,7 @@ void *AtenderCliente(void *socket) {
 	}
 	
 	// Conectar a la base de datos
-	if (mysql_real_connect(conn, "shiva2.upc.es", "root", "mysql", "T3_GameUNODB", 0, NULL, 0) == NULL) {
+	if (mysql_real_connect(conn, "localhost", "root", "mysql", "T3_GameUNODB", 0, NULL, 0) == NULL) {
 		//shiva2.upc.es  y localhost
 		printf("Error inicializando conexion MySQL: %u %s\n", mysql_errno(conn), mysql_error(conn));
 		pthread_exit(NULL);
@@ -1284,6 +1284,29 @@ void *AtenderCliente(void *socket) {
 				printf("No se encontraron jugadores en la partida %s.\n", thirdVar);
 			}
 			pthread_mutex_unlock(&mutex);
+		}if (code == 44)
+		{
+			sprintf(response, "44/%d/%s/%s", numForm, firstVar, secondVar);
+			
+			// Mostrar el mensaje que se enviara a los clientes en la partida
+			printf("Response enviada al cliente(ganador): %s\n", response);			
+			// Usar HandleSocketsGame para obtener los sockets de los jugadores en la partida
+			pthread_mutex_lock(&mutex);
+			int numSockets;
+			int *socketsInGame = HandleSocketsGame(conn, firstVar, &numSockets);
+			
+			if (socketsInGame != NULL) {
+				// Enviar la notificacion a todos los jugadores de la partida
+				for (int j = 0; j < numSockets; j++) {
+					if (socketsInGame[j] != 0) {
+						write(socketsInGame[j], response, strlen(response));
+					}
+				}
+			} else {
+				printf("No se encontraron jugadores en la partida %s.\n", firstVar);
+			}
+			pthread_mutex_unlock(&mutex);	
+
 		}if (code == 31){
 			// alguien ha realizado jugada, ha robado
 			
@@ -1624,7 +1647,7 @@ int main(int argc, char *argv[]) {
 		games[i].index = 0;
 	}
 	int sock_conn, sock_listen;
-	int puerto = 50061;
+	int puerto = 9050;
 	// SERVIDOR: puerto shiva 50061			 puerto vbox 9050
 	struct sockaddr_in serv_adr;
 	
