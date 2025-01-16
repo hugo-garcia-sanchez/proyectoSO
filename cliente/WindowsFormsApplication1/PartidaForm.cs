@@ -382,13 +382,46 @@ namespace WindowsFormsApplication1
                     }
                 }
 
+                // Eliminar todas las cartas grises
+                for (int i = 0; i < cartasJugador.Count;)
+                {
+                    if (cartasJugador[i].Carta.Color == ColorCarta.Gris)
+                    {
+                        // Buscar y eliminar de las listas relacionadas
+                        int indexEnJuego = cartasEnJuego.IndexOf(cartasJugador[i].Carta);
+                        if (indexEnJuego != -1)
+                        {
+                            cartasEnJuego.RemoveAt(indexEnJuego);
+                            botonesEnJuego.RemoveAt(indexEnJuego);
+                            controlesGenericos.RemoveAt(indexEnJuego);
+                        }
+
+                        // Eliminar de cartasJugador
+                        BorrarCartas(i);
+                        BorrarControles(i);
+                        BorrarBotonesCarta(i);
+                        cartasJugador.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+
                 // Posicionar las cartas
                 int xCentro = 487;
                 int xSeparacion = 30;
                 int cantidadCartas = cartasJugador.Count;
 
-                PosicionarCartasJugador(cartasJugador, xCentro, xSeparacion, cantidadCartas);
-                PosicionarCartasJugador(botonesEnJuego, 487, 30, cartasEnJuego.Count);
+                if (cartasEnJuego.Count != 0)
+                {
+                    PosicionarCartasJugador(botonesEnJuego, xCentro, xSeparacion, cartasEnJuego.Count);
+                }
+                else
+                {
+                    MessageBox.Show("you win!");
+                }
+                
 
             }
             else
@@ -397,28 +430,51 @@ namespace WindowsFormsApplication1
             }
         }
 
+
         // Para colocar bien las cartas del player
         private void PosicionarCartasJugador(List<CartaBoton> cartasJugador, int xCentro, int xSeparacion, int cantidadCartas)
         {
-            // Calcular el ancho total necesario (ancho de todas las cartas + espacio entre ellas)
-            int anchoTotal = cantidadCartas * cartasJugador[0].Boton.Width + (cantidadCartas - 1) * xSeparacion;
-
-            // Calcular la posición inicial para que el centro total esté alineado con xCentro
-            int startX = xCentro - anchoTotal / 2;
-
-            // Posicionar cada carta en base al cálculo anterior
-            for (int i = 0; i < cantidadCartas; i++)
+            // Validar que la lista no sea nula y tenga elementos
+            if (cartasJugador == null || cartasJugador.Count == 0)
             {
-                // Calcular la posición X para cada carta
-                int posicionX = startX + i * (cartasJugador[i].Boton.Width + xSeparacion);
+                Console.WriteLine("Error: La lista cartasJugador está vacía o es nula.");
+                return; // Salir del método si la lista no es válida
+            }
 
-                // Asignar la nueva posición al botón de la carta
-                cartasJugador[i].Boton.Location = new System.Drawing.Point(posicionX, 390);
+            // Asegurar que cantidadCartas no exceda el tamaño de la lista
+            if (cantidadCartas > cartasJugador.Count)
+            {
+                Console.WriteLine("Advertencia: cantidadCartas es mayor que el número de elementos en cartasJugador.");
+                cantidadCartas = cartasJugador.Count; // Ajustar para evitar acceso fuera de rango
+            }
 
-                // Agregar el botón al formulario
-                this.Controls.Add(cartasJugador[i].Boton);
+            try
+            {
+                // Calcular el ancho total necesario (ancho de todas las cartas + espacio entre ellas)
+                int anchoTotal = cantidadCartas * cartasJugador[0].Boton.Width + (cantidadCartas - 1) * xSeparacion;
+
+                // Calcular la posición inicial para que el centro total esté alineado con xCentro
+                int startX = xCentro - anchoTotal / 2;
+
+                // Posicionar cada carta en base al cálculo anterior
+                for (int i = 0; i < cantidadCartas; i++)
+                {
+                    // Calcular la posición X para cada carta
+                    int posicionX = startX + i * (cartasJugador[i].Boton.Width + xSeparacion);
+
+                    // Asignar la nueva posición al botón de la carta
+                    cartasJugador[i].Boton.Location = new System.Drawing.Point(posicionX, 390);
+
+                    // Agregar el botón al formulario
+                    this.Controls.Add(cartasJugador[i].Boton);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Se produjo un error al posicionar las cartas: {ex.Message}");
             }
         }
+
 
         private void PedirCartasJugador(int numCards)
         {
@@ -513,10 +569,20 @@ namespace WindowsFormsApplication1
             }
         }
 
-        
 
+        bool primerapartida = true;
         private void ProcesarCartaCentro(string response)
         {
+            if (primerapartida == false)
+            {
+                ControlarGanador();
+            }
+
+            if (primerapartida == true)
+            {
+                primerapartida = false;
+            }
+
 
             string[] phrase = response.Split('/');
             if (phrase.Length > 1)
@@ -635,6 +701,50 @@ namespace WindowsFormsApplication1
         }
 
 
+        bool hayganador = false;
+        public void DameWinner(string partida, string player)
+        {
+            MessageBox.Show("El ganador de la partida " + partida + " es " + player);
+            hayganador = true;
+        }
+        private bool ControlarGanador()
+        {
+            if ((cartasEnJuego.Count == 0) || (cartasJugador.Count == 0))
+            {
+                if (server == null || !server.Connected)
+                {
+                    // Uso de SafeInvoke para asegurarse de que se ejecute en el hilo de la UI
+                    SafeInvoke(this, () =>
+                    {
+                        MessageBox.Show("You are not connected to the server.");
+                    });
+                    return false;
+                }
+                // Send a request to the server to get the number of cards
+                string mensaje = $"44/{nForm}/{partidaName}/{selectedUser}/";
+                byte[] msg = Encoding.ASCII.GetBytes(mensaje);
+
+                try
+                {
+                    server.Send(msg);
+                }
+                catch (SocketException ex)
+                {
+                    // Usamos SafeInvoke también para mostrar mensajes de error de forma segura en la UI
+                    SafeInvoke(this, () =>
+                    {
+                        MessageBox.Show("Error sending data to the server: " + ex.Message);
+                    });
+                    return false;
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /////////////////////////////////////////////////////////// BOTONES /////////////////////////////////////////////////////////////////////////
 
         private void CartaBoton_Click(object sender, EventArgs e)
@@ -700,12 +810,12 @@ namespace WindowsFormsApplication1
                 if (cartasEnJuego.Count < 7)
                 {
                     PedirCartasJugador(1);
-                    MoverTurnoPorRobar();
+                    //MoverTurnoPorRobar();
                 }
                 else
                 {
                     MessageBox.Show("Already 7 cards in your deck!");
-                    MoverTurnoPorRobar();
+                    //MoverTurnoPorRobar();
                 }
             }
             else
@@ -714,6 +824,8 @@ namespace WindowsFormsApplication1
             }
 
         }
+
+        
 
         private void MoverTurnoPorRobar()
         {
@@ -746,6 +858,19 @@ namespace WindowsFormsApplication1
 
         }
 
- 
+        private void pasaturno_Click(object sender, EventArgs e)
+        {
+            if (turn == selectedUser)
+            {
+                MoverTurnoPorRobar();
+            }
+            else
+            {
+                MessageBox.Show("It is not your turn.");
+            }
+            
+            
+
+        }
     }
 }
